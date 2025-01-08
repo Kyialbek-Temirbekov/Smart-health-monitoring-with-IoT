@@ -1,0 +1,1 @@
+INSERT INTO customer(id, username, password, is_enabled) values(11,'ben', 'afdkfad', false);

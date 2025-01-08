@@ -1,3 +1,14 @@
 spring:
   application:
     name: "cloud"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/iot_ht
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+

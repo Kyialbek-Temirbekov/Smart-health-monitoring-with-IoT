@@ -10,9 +10,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Configuration
-@RequiredArgsConstructor
 public class ApplicationConfig {
     private final ApplicationContext applicationContext;
+
+    public ApplicationConfig(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     @Bean
     public Map<String, Executor> executors() {

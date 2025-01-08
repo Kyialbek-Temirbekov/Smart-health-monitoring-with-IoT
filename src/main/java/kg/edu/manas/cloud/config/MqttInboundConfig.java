@@ -15,9 +15,12 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
 @Configuration
-@RequiredArgsConstructor
 public class MqttInboundConfig {
     private final DataPointService dataPointService;
+
+    public MqttInboundConfig(DataPointService dataPointService) {
+        this.dataPointService = dataPointService;
+    }
 
     @Bean
     public MqttPahoClientFactory mqttInboundClientFactory() {
