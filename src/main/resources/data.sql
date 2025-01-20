@@ -1,4 +1,4 @@
-INSERT INTO med_param(id,name,range,min,max,level) values
+INSERT INTO config(id,name,range,min,max,level) values
 (1,'SATURATION','ALL',95,100, 'NORMAL'),
 (2,'SATURATION','ALL',90,94, 'WARNING'),
 (3,'SATURATION','ALL',85,89, 'CRITICAL'),

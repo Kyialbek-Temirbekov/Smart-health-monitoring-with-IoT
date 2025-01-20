@@ -1,7 +1,6 @@
 package kg.edu.manas.cloud.config;
 
-import kg.edu.manas.cloud.service.DataPointService;
-import lombok.RequiredArgsConstructor;
+import kg.edu.manas.cloud.service.DataProcessingService;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,10 +15,10 @@ import org.springframework.messaging.MessageHandler;
 
 @Configuration
 public class MqttInboundConfig {
-    private final DataPointService dataPointService;
+    private final DataProcessingService dataPointService;
 
-    public MqttInboundConfig(DataPointService dataPointService) {
-        this.dataPointService = dataPointService;
+    public MqttInboundConfig(DataProcessingService dataProcessingService) {
+        this.dataPointService = dataProcessingService;
     }
 
     @Bean

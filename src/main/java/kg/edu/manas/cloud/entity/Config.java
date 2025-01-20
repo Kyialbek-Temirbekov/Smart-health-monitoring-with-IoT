@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MedParam {
+public class Config {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "med_param_id_gen")
-    @SequenceGenerator(name = "med_param_id_gen", sequenceName = "med_param_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "config_id_gen")
+    @SequenceGenerator(name = "config_id_gen", sequenceName = "config_seq", allocationSize = 1)
     private Long id;
     @Enumerated(EnumType.STRING)
     private MetricType name;
