@@ -22,6 +22,8 @@ public class Metric {
     private String value;
     private Long timestamp;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "device_id", referencedColumnName = "id")
+    @JoinColumn(name = "device_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Device device;
+    @Column(name = "device_id")
+    private String deviceId;
 }
