@@ -1,7 +1,7 @@
 package kg.edu.manas.cloud.entity;
 
 import jakarta.persistence.*;
-import kg.edu.manas.cloud.date.enums.MetricType;
+import kg.edu.manas.cloud.data.enums.MetricType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

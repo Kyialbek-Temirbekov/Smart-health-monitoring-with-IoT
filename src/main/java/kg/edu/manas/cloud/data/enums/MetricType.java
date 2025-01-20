@@ -1,4 +1,4 @@
-package kg.edu.manas.cloud.date.enums;
+package kg.edu.manas.cloud.data.enums;
 
 public enum MetricType {
     HEART_BEAT,

@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/config")
-public class ConfigApi {
+public class ConfigController {
     private final ConfigService configService;
 
-    public ConfigApi(ConfigService configService) {
+    public ConfigController(ConfigService configService) {
         this.configService = configService;
     }
     @GetMapping("/clear-cache")

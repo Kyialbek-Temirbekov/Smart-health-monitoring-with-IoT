@@ -1,8 +1,8 @@
 package kg.edu.manas.cloud.service;
 
-import kg.edu.manas.cloud.date.enums.Level;
-import kg.edu.manas.cloud.date.enums.MetricType;
-import kg.edu.manas.cloud.date.enums.Range;
+import kg.edu.manas.cloud.data.enums.Level;
+import kg.edu.manas.cloud.data.enums.MetricType;
+import kg.edu.manas.cloud.data.enums.Range;
 import kg.edu.manas.cloud.entity.Metric;
 import kg.edu.manas.cloud.executor.Executor;
 import kg.edu.manas.cloud.repository.MetricRepository;

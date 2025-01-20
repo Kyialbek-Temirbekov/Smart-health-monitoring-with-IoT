@@ -1,6 +1,6 @@
 package kg.edu.manas.cloud.service;
 
-import kg.edu.manas.cloud.date.enums.MetricType;
+import kg.edu.manas.cloud.data.enums.MetricType;
 import kg.edu.manas.cloud.entity.Config;
 import kg.edu.manas.cloud.repository.ConfigRepository;
 import org.springframework.cache.annotation.CacheEvict;
