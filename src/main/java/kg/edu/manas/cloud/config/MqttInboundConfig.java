@@ -15,10 +15,10 @@ import org.springframework.messaging.MessageHandler;
 
 @Configuration
 public class MqttInboundConfig {
-    private final DataProcessingService dataPointService;
+    private final DataProcessingService dataProcessingService;
 
     public MqttInboundConfig(DataProcessingService dataProcessingService) {
-        this.dataPointService = dataProcessingService;
+        this.dataProcessingService = dataProcessingService;
     }
 
     @Bean
@@ -58,6 +58,6 @@ public class MqttInboundConfig {
     @Bean
     @ServiceActivator(inputChannel = "mqttInputChannel")
     public MessageHandler handler() {
-        return dataPointService::accept;
+        return dataProcessingService::process;
     }
 }

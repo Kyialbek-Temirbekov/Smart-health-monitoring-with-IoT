@@ -1,6 +1,7 @@
 package kg.edu.manas.cloud.service;
 
 import kg.edu.manas.cloud.date.enums.Level;
+import kg.edu.manas.cloud.date.enums.MetricType;
 import kg.edu.manas.cloud.date.enums.Range;
 import kg.edu.manas.cloud.entity.Metric;
 import kg.edu.manas.cloud.executor.Executor;
@@ -10,7 +11,9 @@ import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class DataProcessingService {
@@ -24,38 +27,30 @@ public class DataProcessingService {
         this.metricRepository = metricRepository;
     }
 
-    public void accept(Message<?> message) {
-        System.out.println("Message received");
-        var topic = message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC).toString();
-        var executor = executors.get(topic.substring(topic.lastIndexOf('/') + 1));
-        if(executor != null) {
+    public void process(Message<?> message) {
+        String topic = Objects.requireNonNull(message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)).toString();
+        String[] parts = topic.split("/");
+        Executor executor = executors.get(parts[2]);
+/*        if(executor != null) {
             executor.run(message);
-        }
-
-        var headers = message.getHeaders();
-        var parts = topic.split("/");
-        var metricType = MetricUtil.getMetricType(parts[2]);
-        var config = configService.findAll();
-
+        }*/
+        MetricType metricType = MetricUtil.getMetricType(parts[2]);
         var metric = Metric.builder()
                 .type(metricType)
                 .value(message.getPayload().toString())
-                .timestamp(headers.getTimestamp())
-                .deviceId(parts[1])
-                .build();
-
+                .timestamp(message.getHeaders().getTimestamp())
+                .deviceId(parts[1]).build();
         int value = Integer.parseInt(metric.getValue());
-        var range = Range.ALL;
-        var level = config.get(metricType).stream()
-                        .filter(state -> range.equals(state.getRange()))
-                        .filter(state -> value >= state.getMin() && value <= state.getMax())
-                        .findFirst().get().getLevel();
-        process(metric, level);
-
+        var ranges = List.of(Range.ALL, Range.ADULT);
+        Level level = configService.findAll().get(metricType).stream()
+                        .filter(config -> ranges.contains(config.getRange()))
+                        .filter(config -> value >= config.getMin() && value <= config.getMax())
+                        .findFirst().orElseThrow().getLevel();
+        announce(metric, level);
 //        metricRepository.save(metric);
     }
 
-    private void process(Metric metric, Level level) {
+    private void announce(Metric metric, Level level) {
         switch (level) {
             case NORMAL -> System.out.println("do nothing");
             case WARNING -> System.out.println("send not. by device id");
