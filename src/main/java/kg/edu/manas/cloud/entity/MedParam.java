@@ -1,7 +1,9 @@
 package kg.edu.manas.cloud.entity;
 
 import jakarta.persistence.*;
+import kg.edu.manas.cloud.date.enums.Level;
 import kg.edu.manas.cloud.date.enums.MetricType;
+import kg.edu.manas.cloud.date.enums.Range;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +21,10 @@ public class MedParam {
     private Long id;
     @Enumerated(EnumType.STRING)
     private MetricType name;
-    private String range;
+    @Enumerated(EnumType.STRING)
+    private Level level;
+    @Enumerated(EnumType.STRING)
+    private Range range;
     private int min;
     private int max;
 }
