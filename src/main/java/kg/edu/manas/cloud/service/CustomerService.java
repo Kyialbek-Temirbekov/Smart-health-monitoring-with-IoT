@@ -11,18 +11,24 @@ import kg.edu.manas.cloud.entity.Otp;
 import kg.edu.manas.cloud.exception.ConflictException;
 import kg.edu.manas.cloud.repository.CustomerRepository;
 import kg.edu.manas.cloud.repository.OtpRepository;
+import kg.edu.manas.cloud.security.JwtService;
 import kg.edu.manas.cloud.util.NumericTokenGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -31,6 +37,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final OtpRepository otpRepository;
     private final EmailNotificationService emailNotificationService;
+    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
     private static final String REGISTRATION_OTP_SUB = "One time password for registration";
@@ -91,6 +98,19 @@ public class CustomerService {
         } else {
             throw new EntityNotFoundException("User not found by email: " + otpRecord.email());
         }
+    }
+
+    public String signIn(Authentication authentication) {
+        return jwtService.createAccessToken(authentication.getName(), populateAuthorities(authentication.getAuthorities()));
+    }
+
+    private String populateAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        Set<String> authoritiesSet = new HashSet<>();
+        for(GrantedAuthority authority : authorities)
+            if (authority.getAuthority().startsWith("ROLE_")) {
+                authoritiesSet.add(authority.getAuthority());
+            }
+        return String.join(",", authoritiesSet);
     }
 
     public CustomerRecord getCustomer() {

@@ -11,6 +11,7 @@ import kg.edu.manas.cloud.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Customer Service")
@@ -31,6 +32,10 @@ public class CustomerController {
     public ResponseEntity<String> confirmEmail(@RequestBody OtpRecord otpRecord) {
         customerService.confirmEmail(otpRecord);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping("/signIn")
+    public ResponseEntity<String> singIn(Authentication authentication) {
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.signIn(authentication));
     }
     @Operation(summary = "logged in user data")
     @Parameter(name = "Authorization", in = ParameterIn.HEADER, example = "Basic <encoded_credentials>")

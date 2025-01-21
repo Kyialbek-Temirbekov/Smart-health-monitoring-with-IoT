@@ -2,6 +2,7 @@ package kg.edu.manas.cloud.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kg.edu.manas.cloud.data.record.ErrorResponseRecord;
+import kg.edu.manas.cloud.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().permitAll())
+                .addFilterAfter(new JwtAuthenticationFilter(), BasicAuthenticationFilter.class)
                 .httpBasic(c -> c.authenticationEntryPoint(authenticationEntryPoint()))
                 .exceptionHandling(c -> c.authenticationEntryPoint(authenticationEntryPoint()))
                 .formLogin(Customizer.withDefaults());
