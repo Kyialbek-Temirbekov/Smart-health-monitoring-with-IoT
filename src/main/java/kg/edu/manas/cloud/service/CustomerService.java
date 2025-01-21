@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import kg.edu.manas.cloud.data.record.CreateCustomerRecord;
 import kg.edu.manas.cloud.data.record.CustomerRecord;
+import kg.edu.manas.cloud.data.record.EmailMessageRecord;
 import kg.edu.manas.cloud.data.record.OtpRecord;
 import kg.edu.manas.cloud.entity.Customer;
 import kg.edu.manas.cloud.entity.Otp;
@@ -29,6 +30,7 @@ import java.util.concurrent.CompletableFuture;
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final OtpRepository otpRepository;
+    private final EmailNotificationService emailNotificationService;
     private final PasswordEncoder passwordEncoder;
 
     private static final String REGISTRATION_OTP_SUB = "One time password for registration";
@@ -44,8 +46,7 @@ public class CustomerService {
         } else {
             String otpValue = NumericTokenGenerator.generateToken(OTP_LENGTH);
             CompletableFuture.runAsync(() ->
-//                    messageService.sendMessage(new MessageDto(createCustomerRecord.getEmail(), REGISTRATION_OTP_SUB, otpValue))
-                            System.out.println("Sending otp: " + otpValue)
+                    emailNotificationService.sendMessage(new EmailMessageRecord(createCustomerRecord.username(), REGISTRATION_OTP_SUB, otpValue))
             );
             if(optionalCustomer.isPresent()) {
                 Customer customer = optionalCustomer.get();
