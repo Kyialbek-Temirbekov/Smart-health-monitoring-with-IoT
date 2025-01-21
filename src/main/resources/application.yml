@@ -2,6 +2,10 @@ server:
   servlet:
     context-path: /api
 
+application:
+  jwt:
+    key: LJjGo0mnwGVs7RVj6F3X1t0Yq1JtPxo9A9m00G0HeJY=
+
 spring:
   application:
     name: "cloud"

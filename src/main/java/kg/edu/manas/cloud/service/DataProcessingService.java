@@ -26,10 +26,6 @@ public class DataProcessingService {
     public void process(Message<?> message) {
         String topic = Objects.requireNonNull(message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)).toString();
         String[] parts = topic.split("/");
-        Executor executor = executors.get(parts[2]);
-/*        if(executor != null) {
-            executor.run(message);
-        }*/
         MetricType metricType = MetricUtil.getMetricType(parts[2]);
         var metric = Metric.builder()
                 .type(metricType)

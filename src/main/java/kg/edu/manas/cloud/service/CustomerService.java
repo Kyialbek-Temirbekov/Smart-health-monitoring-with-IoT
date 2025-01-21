@@ -113,11 +113,14 @@ public class CustomerService {
         return String.join(",", authoritiesSet);
     }
 
-    public CustomerRecord getCustomer() {
-        return getLoggedInUser();
+    public Customer getLoggedInUser() {
+        String username = getPrincipal().getUsername();
+        return customerRepository.findByUsername(username).orElseThrow(
+                () -> new EntityNotFoundException("User not found by email")
+        );
     }
 
-    public CustomerRecord getLoggedInUser() {
+    public CustomerRecord getCustomer() {
         String username = getPrincipal().getUsername();
         return customerRepository.findByUsername(username, CustomerRecord.class).orElseThrow(
                 () -> new EntityNotFoundException("User not found by email")
