@@ -7,6 +7,7 @@ import kg.edu.manas.cloud.entity.Metric;
 import kg.edu.manas.cloud.executor.Executor;
 import kg.edu.manas.cloud.repository.MetricRepository;
 import kg.edu.manas.cloud.util.MetricUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
@@ -16,16 +17,11 @@ import java.util.Map;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class DataProcessingService {
     private final Map<String, Executor> executors;
     private final ConfigService configService;
     private final MetricRepository metricRepository;
-
-    public DataProcessingService(Map<String, Executor> executors, ConfigService configService, MetricRepository metricRepository) {
-        this.executors = executors;
-        this.configService = configService;
-        this.metricRepository = metricRepository;
-    }
 
     public void process(Message<?> message) {
         String topic = Objects.requireNonNull(message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)).toString();

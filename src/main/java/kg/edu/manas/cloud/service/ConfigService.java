@@ -3,6 +3,7 @@ package kg.edu.manas.cloud.service;
 import kg.edu.manas.cloud.data.enums.MetricType;
 import kg.edu.manas.cloud.entity.Config;
 import kg.edu.manas.cloud.repository.ConfigRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -12,12 +13,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ConfigService {
     private final ConfigRepository configRepository;
-
-    public ConfigService(ConfigRepository configRepository) {
-        this.configRepository = configRepository;
-    }
 
     @Cacheable(value = "config")
     public Map<MetricType, List<Config>> findAll() {

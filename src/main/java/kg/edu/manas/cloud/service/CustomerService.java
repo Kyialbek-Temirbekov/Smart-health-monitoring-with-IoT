@@ -11,6 +11,7 @@ import kg.edu.manas.cloud.exception.ConflictException;
 import kg.edu.manas.cloud.repository.CustomerRepository;
 import kg.edu.manas.cloud.repository.OtpRepository;
 import kg.edu.manas.cloud.util.NumericTokenGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.AuthenticationException;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Service
+@RequiredArgsConstructor
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final OtpRepository otpRepository;
@@ -32,12 +34,6 @@ public class CustomerService {
     private static final String REGISTRATION_OTP_SUB = "One time password for registration";
     private static final long OTP_EXPIRY_HOUR = 3;
     private static final int OTP_LENGTH = 4;
-
-    public CustomerService(CustomerRepository customerRepository, OtpRepository otpRepository, PasswordEncoder passwordEncoder) {
-        this.customerRepository = customerRepository;
-        this.otpRepository = otpRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Transactional
     public void createCustomer(CreateCustomerRecord createCustomerRecord) {
