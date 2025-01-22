@@ -9,5 +9,4 @@ import java.util.List;
 
 @Repository
 public interface ConfigRepository extends JpaRepository<Config, Long> {
-    List<Config> findAllByName(MetricType name);
 }

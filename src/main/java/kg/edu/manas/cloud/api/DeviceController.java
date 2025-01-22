@@ -2,7 +2,6 @@ package kg.edu.manas.cloud.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kg.edu.manas.cloud.data.record.CreateCustomerRecord;
 import kg.edu.manas.cloud.data.record.CreateDeviceRecord;
 import kg.edu.manas.cloud.service.DeviceService;
 import lombok.RequiredArgsConstructor;
