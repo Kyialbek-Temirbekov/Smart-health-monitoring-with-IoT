@@ -1,6 +1,6 @@
 package kg.edu.manas.cloud.config;
 
-import kg.edu.manas.cloud.executor.Executor;
+import kg.edu.manas.cloud.service.executor.Executor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;

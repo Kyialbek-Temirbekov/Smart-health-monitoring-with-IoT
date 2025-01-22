@@ -1,8 +1,8 @@
 package kg.edu.manas.cloud.service;
 
-import kg.edu.manas.cloud.data.enums.MetricType;
-import kg.edu.manas.cloud.entity.Config;
-import kg.edu.manas.cloud.repository.ConfigRepository;
+import kg.edu.manas.cloud.model.data.enums.MetricType;
+import kg.edu.manas.cloud.model.entity.Config;
+import kg.edu.manas.cloud.model.repository.ConfigRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;

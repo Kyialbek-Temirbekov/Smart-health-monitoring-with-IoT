@@ -1,7 +1,7 @@
 package kg.edu.manas.cloud.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kg.edu.manas.cloud.data.record.ErrorResponseRecord;
+import kg.edu.manas.cloud.model.data.record.ErrorResponseRecord;
 import kg.edu.manas.cloud.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

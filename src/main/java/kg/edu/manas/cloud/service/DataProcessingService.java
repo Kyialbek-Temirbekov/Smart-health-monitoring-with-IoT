@@ -1,12 +1,12 @@
 package kg.edu.manas.cloud.service;
 
 import kg.edu.manas.cloud.config.MqttOutboundConfig;
-import kg.edu.manas.cloud.data.enums.Level;
-import kg.edu.manas.cloud.data.enums.MetricType;
-import kg.edu.manas.cloud.data.enums.Range;
-import kg.edu.manas.cloud.data.record.EmailMessageRecord;
-import kg.edu.manas.cloud.entity.Metric;
-import kg.edu.manas.cloud.repository.MetricRepository;
+import kg.edu.manas.cloud.model.data.enums.Level;
+import kg.edu.manas.cloud.model.data.enums.MetricType;
+import kg.edu.manas.cloud.model.data.enums.Range;
+import kg.edu.manas.cloud.model.data.record.EmailMessageRecord;
+import kg.edu.manas.cloud.model.entity.Metric;
+import kg.edu.manas.cloud.model.repository.MetricRepository;
 import kg.edu.manas.cloud.util.DateTimeUtil;
 import kg.edu.manas.cloud.util.MetricUtil;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package kg.edu.manas.cloud.util;
 
-import kg.edu.manas.cloud.data.enums.MetricType;
+import kg.edu.manas.cloud.model.data.enums.MetricType;
 
 public class MetricUtil {
     public static MetricType getMetricType(String metricName) {

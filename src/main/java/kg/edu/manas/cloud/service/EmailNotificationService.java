@@ -1,6 +1,6 @@
 package kg.edu.manas.cloud.service;
 
-import kg.edu.manas.cloud.data.record.EmailMessageRecord;
+import kg.edu.manas.cloud.model.data.record.EmailMessageRecord;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;

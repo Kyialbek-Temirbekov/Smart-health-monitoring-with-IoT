@@ -21,6 +21,10 @@ spring:
     show-sql: true
   cache:
     type: simple
+  data:
+    redis:
+      host: localhost
+      port: 6379
   mail:
     host: smtp.gmail.com
     port: 587

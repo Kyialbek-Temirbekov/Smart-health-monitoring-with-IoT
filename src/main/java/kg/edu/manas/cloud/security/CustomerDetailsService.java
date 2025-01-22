@@ -1,7 +1,6 @@
 package kg.edu.manas.cloud.security;
 
-import kg.edu.manas.cloud.entity.Customer;
-import kg.edu.manas.cloud.repository.CustomerRepository;
+import kg.edu.manas.cloud.model.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

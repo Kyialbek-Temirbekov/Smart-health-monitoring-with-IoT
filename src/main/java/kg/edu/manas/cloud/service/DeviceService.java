@@ -1,8 +1,8 @@
 package kg.edu.manas.cloud.service;
 
-import kg.edu.manas.cloud.data.record.CreateDeviceRecord;
-import kg.edu.manas.cloud.entity.Device;
-import kg.edu.manas.cloud.repository.DeviceRepository;
+import kg.edu.manas.cloud.model.data.record.CreateDeviceRecord;
+import kg.edu.manas.cloud.model.entity.Device;
+import kg.edu.manas.cloud.model.repository.DeviceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
