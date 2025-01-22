@@ -5,6 +5,8 @@ server:
 application:
   jwt:
     key: LJjGo0mnwGVs7RVj6F3X1t0Yq1JtPxo9A9m00G0HeJY=
+  encryption:
+    secretKey: rEMi9yyfvH0AfSOfgqvSeE8h0GLQaflu7VxRrcExTGo=
 
 spring:
   application:
