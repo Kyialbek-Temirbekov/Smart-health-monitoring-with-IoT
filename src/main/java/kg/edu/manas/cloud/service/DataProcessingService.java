@@ -1,9 +1,11 @@
 package kg.edu.manas.cloud.service;
 
 import kg.edu.manas.cloud.config.MqttOutboundConfig;
+import kg.edu.manas.cloud.model.cache.RedisCache;
 import kg.edu.manas.cloud.model.data.enums.Level;
 import kg.edu.manas.cloud.model.data.enums.MetricType;
 import kg.edu.manas.cloud.model.data.enums.Range;
+import kg.edu.manas.cloud.model.data.record.AlertCacheRecord;
 import kg.edu.manas.cloud.model.data.record.EmailMessageRecord;
 import kg.edu.manas.cloud.model.entity.Metric;
 import kg.edu.manas.cloud.model.repository.MetricRepository;
@@ -18,6 +20,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+import static kg.edu.manas.cloud.util.MetricUtil.isPriorityHigher;
+import static kg.edu.manas.cloud.util.MetricUtil.isPriorityLower;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -26,6 +31,7 @@ public class DataProcessingService {
     private final EmailNotificationService emailNotificationService;
     private final ConfigService configService;
     private final MetricRepository metricRepository;
+    private final RedisCache redisCache;
 
     public void process(Message<?> message) {
         String topic = Objects.requireNonNull(message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)).toString();
@@ -42,13 +48,29 @@ public class DataProcessingService {
                         .filter(config -> ranges.contains(config.getRange()))
                         .filter(config -> value >= config.getMin() && value <= config.getMax())
                         .findFirst().orElseThrow().getLevel();
+
+        AlertCacheRecord alert = new AlertCacheRecord(metricType, level);
+        var alertOpt = redisCache.get(metric.getDeviceId());
+        if(alertOpt.isPresent()) {
+            AlertCacheRecord alertCache = (AlertCacheRecord) alertOpt.get();
+            if(alert.metric().equals(alertCache.metric())) {
+                if(!isPriorityHigher(alert.level(), alertCache.level())) {
+                    return;
+                }
+            } else {
+                if(isPriorityLower(alert.level(), alertCache.level())) {
+                    return;
+                }
+            }
+        }
+        redisCache.putWithTTL(metric.getDeviceId(), alert);
         announce(metric, level);
 //        metricRepository.save(metric);
     }
 
     private void announce(Metric metric, Level level) {
         switch (level) {
-            case NORMAL -> log.info("The metric has been processed, and the status is normal.");
+            case NORMAL -> {}
             case WARNING -> mqttGateway.sendToMqtt("Warning: " + metric.getType() +" is out of the normal range. Please monitor closely.", "device/" + metric.getDeviceId() + "/msg");
             case CRITICAL -> {
                 mqttGateway.sendToMqtt("Critical: " + metric.getType() + " is outside safe parameters. Immediate attention required.", "device/" + metric.getDeviceId() + "/msg");
