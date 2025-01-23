@@ -31,6 +31,7 @@ public class DataProcessingService {
     private final EmailNotificationService emailNotificationService;
     private final EncryptionService encryptionService;
     private final ConfigService configService;
+    private final CustomerService customerService;
     private final MetricRepository metricRepository;
     private final RedisCache redisCache;
 
@@ -38,13 +39,15 @@ public class DataProcessingService {
         String topic = Objects.requireNonNull(message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)).toString();
         String[] parts = topic.split("/");
         MetricType metricType = MetricUtil.getMetricType(parts[2]);
+        String encryptedDeviceId = encryptionService.encrypt(parts[1]);
         var metric = Metric.builder()
                 .type(metricType)
                 .value(message.getPayload().toString())
                 .timestamp(message.getHeaders().getTimestamp())
-                .deviceId(encryptionService.encrypt(parts[1])).build();
+                .deviceId(encryptedDeviceId).build();
         int value = Integer.parseInt(metric.getValue());
-        var ranges = List.of(Range.ALL, Range.ADULT); // to do
+        int age = customerService.getAge(encryptedDeviceId);
+        var ranges = List.of(Range.ALL, MetricUtil.getRange(age));
         Level level = configService.findAll().get(metricType).stream()
                         .filter(config -> ranges.contains(config.getRange()))
                         .filter(config -> value >= config.getMin() && value <= config.getMax())

@@ -2,6 +2,9 @@ package kg.edu.manas.cloud.util;
 
 import kg.edu.manas.cloud.model.data.enums.Level;
 import kg.edu.manas.cloud.model.data.enums.MetricType;
+import kg.edu.manas.cloud.model.data.enums.Range;
+
+import static kg.edu.manas.cloud.model.data.enums.Range.*;
 
 public class MetricUtil {
     public static MetricType getMetricType(String metricName) {
@@ -14,6 +17,17 @@ public class MetricUtil {
             case "gps" -> MetricType.GPS;
             default -> null;
         };
+    }
+    public static Range getRange(int age) {
+        if(age < 0) {
+            throw new IllegalArgumentException("Age cannot be negative");
+        } else if(age < 18) {
+            return CHILDREN;
+        } else if(age < 60) {
+            return ADULT;
+        } else {
+            return ELDERLY;
+        }
     }
     public static boolean isPriorityHigher(Level subject, Level object) {
         return subject.getPriority() > object.getPriority();

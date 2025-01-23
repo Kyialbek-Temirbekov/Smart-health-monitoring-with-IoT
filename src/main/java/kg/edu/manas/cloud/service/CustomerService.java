@@ -24,7 +24,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
@@ -62,7 +64,6 @@ public class CustomerService {
                 customer.setName(createCustomerRecord.name());
                 customer.setBirthDate(createCustomerRecord.birthDate());
 
-                /*Otp otp = optionalCustomer.get().getOtp();*/
                 Otp otp = otpRepository.findById(optionalCustomer.get().getId()).orElseThrow(EntityNotFoundException::new);
                 otp.setValue(otpValue);
                 otp.setExpiryTime(LocalDateTime.now().plusHours(OTP_EXPIRY_HOUR));
@@ -71,7 +72,6 @@ public class CustomerService {
                 Otp otp = Otp.builder()
                         .value(otpValue)
                         .expiryTime(LocalDateTime.now().plusHours(OTP_EXPIRY_HOUR)).build();
-                /*customer.setOtp(otp);*/
                 otp.setCustomer(customer);
                 customerRepository.save(customer);
                 otpRepository.save(otp);
@@ -89,7 +89,6 @@ public class CustomerService {
                 throw new CredentialsExpiredException("One time password expired");
             }
             else if(/*customer.getOtp().getValue().*/"0000".equals(otpRecord.otp())) {
-                /*customer.setOtp(null);*/
                 otpRepository.deleteById(customer.getId());
                 customer.setEnabled(true);
             } else {
@@ -139,5 +138,10 @@ public class CustomerService {
 
     public void delete(Long id) {
         customerRepository.deleteById(id);
+    }
+
+    public int getAge(String deviceId) {
+        var birthDate = customerRepository.getBirthDate(deviceId);
+        return Period.between(birthDate, LocalDate.now()).getYears();
     }
 }
