@@ -19,7 +19,7 @@ public class EncryptionService {
 
     private SecretKey getSecretKey() {
         byte[] decodedKey = Base64.getDecoder().decode(properties.secretKey);
-        return new SecretKeySpec(decodedKey, 0, decodedKey.length, properties.getSecretKey());
+        return new SecretKeySpec(decodedKey, 0, decodedKey.length, properties.getAlgorithm());
     }
 
     public String encrypt(String data) {

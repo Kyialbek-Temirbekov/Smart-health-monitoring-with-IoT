@@ -1,6 +1,7 @@
 package kg.edu.manas.cloud;
 
 import kg.edu.manas.cloud.service.CustomerService;
+import kg.edu.manas.cloud.service.EncryptionService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,9 +19,8 @@ public class CloudApplication {
 	}
 
 	@Bean
-	public CommandLineRunner commandLineRunner(CustomerService customerService) {
+	public CommandLineRunner commandLineRunner(EncryptionService encryptionService) {
 		return args -> {
-
 		};
 	}
 }

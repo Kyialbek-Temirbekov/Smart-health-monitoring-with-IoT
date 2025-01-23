@@ -48,7 +48,7 @@ public class DataProcessingService {
                 .type(metricType)
                 .value(message.getPayload().toString())
                 .timestamp(message.getHeaders().getTimestamp())
-                .deviceId(encryptedDeviceId).build();
+                .deviceId(parts[1]).build();
         int value = Integer.parseInt(metric.getValue());
         int age = customerService.getAge(encryptedDeviceId);
         var ranges = List.of(Range.ALL, MetricUtil.getRange(age));
@@ -72,11 +72,11 @@ public class DataProcessingService {
             }
         }
         redisCache.putWithTTL(metric.getDeviceId(), alert);
-        announce(metric, level);
+        announce(metric, level, encryptedDeviceId);
         metricRepository.save(metric);
     }
 
-    private void announce(Metric metric, Level level) {
+    private void announce(Metric metric, Level level, String encryptedDeviceId) {
         String metricName = MetricUtil.getMetricName(metric.getType());
         switch (level) {
             case NORMAL -> {}
@@ -86,7 +86,7 @@ public class DataProcessingService {
                 System.out.println("Send notification via web socket"); // to do
             }
             case EMERGENCY -> {
-                Metric gps = metricRepository.findLastMetricByDeviceIdAndType(metric.getDeviceId(), MetricType.GPS);
+                Metric gps = metricRepository.findLastMetricByDeviceIdAndType(encryptedDeviceId, MetricType.GPS);
                 emailNotificationService.sendMessage(new EmailMessageRecord(
                         emergencyMail,
                         HELP_SUB,
