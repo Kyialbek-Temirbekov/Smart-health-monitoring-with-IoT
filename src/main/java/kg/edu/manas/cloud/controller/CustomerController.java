@@ -25,7 +25,7 @@ public class CustomerController {
     @PostMapping()
     public ResponseEntity<String> createCustomer(@RequestBody CreateCustomerRecord createCustomerRecord) {
         customerService.createCustomer(createCustomerRecord);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @Operation(summary = "confirm email")
     @PatchMapping("/confirm-email")

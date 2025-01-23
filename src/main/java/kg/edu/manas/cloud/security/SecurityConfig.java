@@ -24,14 +24,14 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter authenticationFilter) throws Exception {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().permitAll())
-                .addFilterAfter(new JwtAuthenticationFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(authenticationFilter, BasicAuthenticationFilter.class)
                 .httpBasic(c -> c.authenticationEntryPoint(authenticationEntryPoint()))
                 .exceptionHandling(c -> c.authenticationEntryPoint(authenticationEntryPoint()))
                 .formLogin(Customizer.withDefaults());

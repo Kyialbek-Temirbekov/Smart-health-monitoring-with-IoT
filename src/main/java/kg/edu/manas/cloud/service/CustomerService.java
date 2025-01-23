@@ -115,26 +115,25 @@ public class CustomerService {
     }
 
     public Customer getLoggedInUser() {
-        String username = getPrincipal().getUsername();
+        String username = getPrincipal();
         return customerRepository.findByUsername(username).orElseThrow(
                 () -> new EntityNotFoundException(Messages.USER_NOT_FOUND)
         );
     }
 
     public CustomerRecord getCustomer() {
-        String username = getPrincipal().getUsername();
+        String username = getPrincipal();
         return customerRepository.findByUsername(username, CustomerRecord.class).orElseThrow(
                 () -> new EntityNotFoundException(Messages.USER_NOT_FOUND)
         );
     }
 
-    public UserDetails getPrincipal() {
+    public String getPrincipal() {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(principal instanceof UserDetails) {
-            return (UserDetails) principal;
+            return ((UserDetails) principal).getUsername();
         } else {
-            throw new AuthenticationException("Unauthorized") {
-            };
+            return (String) principal;
         }
     }
 

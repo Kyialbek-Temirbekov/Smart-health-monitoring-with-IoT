@@ -20,8 +20,7 @@ public class CloudApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner(CustomerService customerService) {
 		return args -> {
-			System.out.println(customerService.getAge("w+3gdSMZziSUByGboyjlZg=="));
-			System.out.println(customerService.getAge("w+3gdSMZziSUByGboyjlZg=="));
+
 		};
 	}
 }
