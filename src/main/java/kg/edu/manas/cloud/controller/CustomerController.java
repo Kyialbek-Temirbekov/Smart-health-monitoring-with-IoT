@@ -38,7 +38,6 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.OK).body(customerService.signIn(authentication));
     }
     @Operation(summary = "logged in user data")
-    @Parameter(name = "Authorization", in = ParameterIn.HEADER, example = "Basic <encoded_credentials>")
     @GetMapping
     public ResponseEntity<CustomerRecord> getCustomer() {
         return new ResponseEntity<>(customerService.getCustomer(), HttpStatus.OK);

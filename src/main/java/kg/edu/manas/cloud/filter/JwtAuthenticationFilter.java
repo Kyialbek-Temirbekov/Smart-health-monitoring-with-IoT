@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kg.edu.manas.cloud.model.data.constants.Messages;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,13 +23,14 @@ import java.nio.charset.StandardCharsets;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Value("${application.jwt.key}")
     private String jwtKey;
-    private String prefix = "Bearer ";
+    private static final String BEARER_PREFIX = "Bearer ";
+    private static final String AUTH_HEADER = "Authorization";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String jwt = request.getHeader("Authorization");
-        if (null != jwt && jwt.startsWith(prefix)) {
+        String jwt = request.getHeader(AUTH_HEADER);
+        if (null != jwt && jwt.startsWith(BEARER_PREFIX)) {
             try {
                 SecretKey key = Keys.hmacShaKeyFor(
                         jwtKey.getBytes(StandardCharsets.UTF_8));
@@ -36,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Claims claims = Jwts.parserBuilder()
                         .setSigningKey(key)
                         .build()
-                        .parseClaimsJws(jwt.substring(prefix.length()))
+                        .parseClaimsJws(jwt.substring(BEARER_PREFIX.length()))
                         .getBody();
                 String username = String.valueOf(claims.get("username"));
                 String authorities = (String) claims.get("authorities");
@@ -44,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception e) {
-                throw new BadCredentialsException("Invalid Token received!");
+                throw new BadCredentialsException(Messages.INVALID_TOKEN);
             }
 
         }

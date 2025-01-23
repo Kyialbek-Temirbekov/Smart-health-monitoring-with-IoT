@@ -1,5 +1,6 @@
 package kg.edu.manas.cloud.util;
 
+import kg.edu.manas.cloud.model.data.constants.Messages;
 import kg.edu.manas.cloud.model.data.enums.Level;
 import kg.edu.manas.cloud.model.data.enums.MetricType;
 import kg.edu.manas.cloud.model.data.enums.Range;
@@ -7,6 +8,15 @@ import kg.edu.manas.cloud.model.data.enums.Range;
 import static kg.edu.manas.cloud.model.data.enums.Range.*;
 
 public class MetricUtil {
+    public static String getMetricName(MetricType metricType) {
+        return switch (metricType) {
+            case HEART_BEAT -> Messages.HEART_BEAT;
+            case SATURATION -> Messages.SATURATION;
+            case AIR_QUALITY -> Messages.AIR_QUALITY;
+            default -> "_";
+        };
+    }
+
     public static MetricType getMetricType(String metricName) {
         return switch (metricName) {
             case "heart-beat" -> MetricType.HEART_BEAT;

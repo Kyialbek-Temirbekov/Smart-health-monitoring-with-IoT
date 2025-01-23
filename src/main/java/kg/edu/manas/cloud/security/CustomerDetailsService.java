@@ -1,5 +1,6 @@
 package kg.edu.manas.cloud.security;
 
+import kg.edu.manas.cloud.model.data.constants.Messages;
 import kg.edu.manas.cloud.model.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,6 @@ public class CustomerDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return customerRepository.findByUsername(email).orElseThrow(() ->
-                new UsernameNotFoundException("User not found by email:" + email));
+                new UsernameNotFoundException(Messages.USER_NOT_FOUND));
     }
 }

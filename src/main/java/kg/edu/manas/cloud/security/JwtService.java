@@ -16,7 +16,7 @@ public class JwtService {
 
     public String createAccessToken(String username, String authorities) {
         SecretKey key = Keys.hmacShaKeyFor(jwtKey.getBytes(StandardCharsets.UTF_8));
-        return Jwts.builder().setIssuer("KTMU").setSubject("Access token")
+        return Jwts.builder().setIssuer("KTMU").setSubject("ACCESS_TOKEN")
                 .claim("username", username)
                 .claim("authorities", authorities)
                 .setIssuedAt(new Date())

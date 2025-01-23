@@ -1,5 +1,6 @@
 package kg.edu.manas.cloud.service;
 
+import kg.edu.manas.cloud.model.data.constants.Messages;
 import kg.edu.manas.cloud.model.data.enums.MetricType;
 import kg.edu.manas.cloud.model.entity.Config;
 import kg.edu.manas.cloud.model.repository.ConfigRepository;
@@ -24,6 +25,7 @@ public class ConfigService {
     }
 
     @CacheEvict(value = "config", allEntries = true)
-    public void clearCache() {
+    public String clearCache() {
+        return Messages.CACHE_CLEARED;
     }
 }

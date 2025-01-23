@@ -14,7 +14,6 @@ public class ConfigController {
 
     @GetMapping("/clear-cache")
     public String clearCache() {
-        configService.clearCache();
-        return "Cache cleared successfully";
+        return configService.clearCache();
     }
 }

@@ -13,6 +13,7 @@ import kg.edu.manas.cloud.util.DateTimeUtil;
 import kg.edu.manas.cloud.util.MetricUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+import static kg.edu.manas.cloud.model.data.constants.Messages.*;
 import static kg.edu.manas.cloud.util.MetricUtil.isPriorityHigher;
 import static kg.edu.manas.cloud.util.MetricUtil.isPriorityLower;
 
@@ -27,6 +29,8 @@ import static kg.edu.manas.cloud.util.MetricUtil.isPriorityLower;
 @RequiredArgsConstructor
 @Slf4j
 public class DataProcessingService {
+    @Value("${application.emergency.mail}")
+    private String emergencyMail;
     private final MqttOutboundConfig.MqttGateway mqttGateway;
     private final EmailNotificationService emailNotificationService;
     private final EncryptionService encryptionService;
@@ -69,26 +73,24 @@ public class DataProcessingService {
         }
         redisCache.putWithTTL(metric.getDeviceId(), alert);
         announce(metric, level);
-//        metricRepository.save(metric);
+        metricRepository.save(metric);
     }
 
     private void announce(Metric metric, Level level) {
+        String metricName = MetricUtil.getMetricName(metric.getType());
         switch (level) {
             case NORMAL -> {}
-            case WARNING -> mqttGateway.sendToMqtt("Warning: " + metric.getType() +" is out of the normal range. Please monitor closely.", "device/" + metric.getDeviceId() + "/msg");
+            case WARNING -> mqttGateway.sendToMqtt(String.format(TOPIC_WARNING_MSG, metricName), "device/" + metric.getDeviceId() + "/msg");
             case CRITICAL -> {
-                mqttGateway.sendToMqtt("Critical: " + metric.getType() + " is outside safe parameters. Immediate attention required.", "device/" + metric.getDeviceId() + "/msg");
+                mqttGateway.sendToMqtt(String.format(TOPIC_CRITICAL_MSG, metricName), "device/" + metric.getDeviceId() + "/msg");
                 System.out.println("Send notification via web socket"); // to do
             }
             case EMERGENCY -> {
                 Metric gps = metricRepository.findLastMetricByDeviceIdAndType(metric.getDeviceId(), MetricType.GPS);
                 emailNotificationService.sendMessage(new EmailMessageRecord(
-                        "2004.01035@manas.edu.kg",
-                        "CALL FOR HELP",
-                        metric.getType() + " has gone beyond acceptable limits. " +
-                                "Detected at: " + DateTimeUtil.format(gps.getTimestamp()) +
-                                // https://2gis.kg/search/geo/74.576216479763389,42.832382144897558
-                                ". Location: https://2gis.kg/search/geo/" + gps.getValue()
+                        emergencyMail,
+                        HELP_SUB,
+                        String.format(HELP_MSG, metricName, gps.getValue(), DateTimeUtil.format(gps.getTimestamp()))
                 ));
             }
         }

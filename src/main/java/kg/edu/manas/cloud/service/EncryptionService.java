@@ -1,7 +1,8 @@
 package kg.edu.manas.cloud.service;
 
+import kg.edu.manas.cloud.model.data.property.EncryptionProperties;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.*;
@@ -11,21 +12,19 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class EncryptionService {
-    @Value("${application.encryption.secretKey}")
-    private String encodedKey;
-    private static final String ALGORITHM = "AES";
-    private static final String CIPHER_MODE = "AES/ECB/PKCS5Padding";
+    private final EncryptionProperties properties;
 
     private SecretKey getSecretKey() {
-        byte[] decodedKey = Base64.getDecoder().decode(encodedKey);
-        return new SecretKeySpec(decodedKey, 0, decodedKey.length, ALGORITHM);
+        byte[] decodedKey = Base64.getDecoder().decode(properties.secretKey);
+        return new SecretKeySpec(decodedKey, 0, decodedKey.length, properties.getSecretKey());
     }
 
     public String encrypt(String data) {
         try {
-            Cipher cipher = Cipher.getInstance(CIPHER_MODE);
+            Cipher cipher = Cipher.getInstance(properties.cipherMode);
             cipher.init(Cipher.ENCRYPT_MODE, getSecretKey());
 
             byte[] encryptedData = cipher.doFinal(data.getBytes());
@@ -46,7 +45,7 @@ public class EncryptionService {
     public String decrypt(String encryptedData) {
         try {
             byte[] encryptedBytes = Base64.getDecoder().decode(encryptedData);
-            Cipher cipher = Cipher.getInstance(CIPHER_MODE);
+            Cipher cipher = Cipher.getInstance(properties.cipherMode);
             cipher.init(Cipher.DECRYPT_MODE, getSecretKey());
 
             byte[] decryptedData = cipher.doFinal(encryptedBytes);

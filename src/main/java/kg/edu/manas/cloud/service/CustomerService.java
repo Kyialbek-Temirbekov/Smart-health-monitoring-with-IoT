@@ -2,6 +2,7 @@ package kg.edu.manas.cloud.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import kg.edu.manas.cloud.model.data.constants.Messages;
 import kg.edu.manas.cloud.model.data.record.CreateCustomerRecord;
 import kg.edu.manas.cloud.model.data.record.CustomerRecord;
 import kg.edu.manas.cloud.model.data.record.EmailMessageRecord;
@@ -43,20 +44,20 @@ public class CustomerService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
-    private static final String REGISTRATION_OTP_SUB = "One time password for registration";
     private static final long OTP_EXPIRY_HOUR = 3;
     private static final int OTP_LENGTH = 4;
+    private static final String ROLE_PREFIX = "ROLE_";
 
     @Transactional
     public void createCustomer(CreateCustomerRecord createCustomerRecord) {
         Optional<Customer> optionalCustomer = customerRepository.findByUsername(createCustomerRecord.username());
 
         if(optionalCustomer.isPresent() && optionalCustomer.get().isEnabled()) {
-            throw new ConflictException("User already exist: " + createCustomerRecord.username());
+            throw new ConflictException(Messages.USER_ALREADY_EXIST);
         } else {
             String otpValue = NumericTokenGenerator.generateToken(OTP_LENGTH);
             CompletableFuture.runAsync(() ->
-                    emailNotificationService.sendMessage(new EmailMessageRecord(createCustomerRecord.username(), REGISTRATION_OTP_SUB, otpValue))
+                    emailNotificationService.sendMessage(new EmailMessageRecord(createCustomerRecord.username(), String.format(Messages.REGISTRATION_OTP_SUB, otpValue), otpValue))
             );
             if(optionalCustomer.isPresent()) {
                 Customer customer = optionalCustomer.get();
@@ -87,16 +88,16 @@ public class CustomerService {
             Customer customer = optionalCustomer.get();
             Otp otp = otpRepository.findById(customer.getId()).orElseThrow(EntityNotFoundException::new);
             if(otp.isExpired()) {
-                throw new CredentialsExpiredException("One time password expired");
+                throw new CredentialsExpiredException(Messages.EXPIRED_OTP);
             }
             else if(/*customer.getOtp().getValue().*/"0000".equals(otpRecord.otp())) {
                 otpRepository.deleteById(customer.getId());
                 customer.setEnabled(true);
             } else {
-                throw new BadCredentialsException("One time password is invalid");
+                throw new BadCredentialsException(Messages.INVALID_OPT);
             }
         } else {
-            throw new EntityNotFoundException("User not found by email: " + otpRecord.email());
+            throw new EntityNotFoundException(Messages.USER_NOT_FOUND);
         }
     }
 
@@ -107,7 +108,7 @@ public class CustomerService {
     private String populateAuthorities(Collection<? extends GrantedAuthority> authorities) {
         Set<String> authoritiesSet = new HashSet<>();
         for(GrantedAuthority authority : authorities)
-            if (authority.getAuthority().startsWith("ROLE_")) {
+            if (authority.getAuthority().startsWith(ROLE_PREFIX)) {
                 authoritiesSet.add(authority.getAuthority());
             }
         return String.join(",", authoritiesSet);
@@ -116,14 +117,14 @@ public class CustomerService {
     public Customer getLoggedInUser() {
         String username = getPrincipal().getUsername();
         return customerRepository.findByUsername(username).orElseThrow(
-                () -> new EntityNotFoundException("User not found by email")
+                () -> new EntityNotFoundException(Messages.USER_NOT_FOUND)
         );
     }
 
     public CustomerRecord getCustomer() {
         String username = getPrincipal().getUsername();
         return customerRepository.findByUsername(username, CustomerRecord.class).orElseThrow(
-                () -> new EntityNotFoundException("User not found by email")
+                () -> new EntityNotFoundException(Messages.USER_NOT_FOUND)
         );
     }
 
