@@ -29,6 +29,7 @@ import static kg.edu.manas.cloud.util.MetricUtil.isPriorityLower;
 public class DataProcessingService {
     private final MqttOutboundConfig.MqttGateway mqttGateway;
     private final EmailNotificationService emailNotificationService;
+    private final EncryptionService encryptionService;
     private final ConfigService configService;
     private final MetricRepository metricRepository;
     private final RedisCache redisCache;
@@ -41,7 +42,7 @@ public class DataProcessingService {
                 .type(metricType)
                 .value(message.getPayload().toString())
                 .timestamp(message.getHeaders().getTimestamp())
-                .deviceId(parts[1]).build();
+                .deviceId(encryptionService.encrypt(parts[1])).build();
         int value = Integer.parseInt(metric.getValue());
         var ranges = List.of(Range.ALL, Range.ADULT); // to do
         Level level = configService.findAll().get(metricType).stream()

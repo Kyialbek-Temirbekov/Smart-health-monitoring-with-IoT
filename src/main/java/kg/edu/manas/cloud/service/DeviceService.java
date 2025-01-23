@@ -11,10 +11,11 @@ import org.springframework.stereotype.Service;
 public class DeviceService {
     private final DeviceRepository deviceRepository;
     private final CustomerService customerService;
+    private final EncryptionService encryptionService;
 
     public void save(CreateDeviceRecord createDeviceRecord) {
         Device device = Device.builder()
-                .id(createDeviceRecord.id())
+                .id(encryptionService.encrypt(createDeviceRecord.id()))
                 .customer(customerService.getLoggedInUser()).build();
         deviceRepository.save(device);
     }

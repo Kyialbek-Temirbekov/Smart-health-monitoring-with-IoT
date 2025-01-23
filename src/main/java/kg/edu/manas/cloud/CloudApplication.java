@@ -1,9 +1,13 @@
 package kg.edu.manas.cloud;
 
+import kg.edu.manas.cloud.model.data.enums.MetricType;
 import kg.edu.manas.cloud.model.entity.Device;
+import kg.edu.manas.cloud.model.entity.Metric;
 import kg.edu.manas.cloud.model.repository.CustomerRepository;
 import kg.edu.manas.cloud.model.repository.DeviceRepository;
+import kg.edu.manas.cloud.model.repository.MetricRepository;
 import kg.edu.manas.cloud.service.EncryptionService;
+import org.hibernate.Hibernate;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,7 +25,7 @@ public class CloudApplication {
 	}
 
 	@Bean
-	public CommandLineRunner commandLineRunner(CustomerRepository customerRepository, DeviceRepository deviceRepository, EncryptionService encryptionService) {
+	public CommandLineRunner commandLineRunner(MetricRepository metricRepository, CustomerRepository customerRepository, DeviceRepository deviceRepository, EncryptionService encryptionService) {
 		return args -> {
 
 		};
