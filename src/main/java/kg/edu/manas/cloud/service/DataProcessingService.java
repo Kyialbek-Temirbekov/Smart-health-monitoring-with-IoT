@@ -73,6 +73,7 @@ public class DataProcessingService {
         }
         redisCache.putWithTTL(metric.getDeviceId(), alert);
         announce(metric, level, encryptedDeviceId);
+        metric.setDeviceId(encryptedDeviceId);
         metricRepository.save(metric);
     }
 
