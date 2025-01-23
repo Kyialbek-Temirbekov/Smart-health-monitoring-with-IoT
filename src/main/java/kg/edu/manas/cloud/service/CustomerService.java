@@ -14,6 +14,7 @@ import kg.edu.manas.cloud.model.repository.OtpRepository;
 import kg.edu.manas.cloud.security.JwtService;
 import kg.edu.manas.cloud.util.NumericTokenGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
@@ -140,6 +141,7 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
+    @Cacheable(value = "age", key = "#deviceId")
     public int getAge(String deviceId) {
         var birthDate = customerRepository.getBirthDate(deviceId);
         return Period.between(birthDate, LocalDate.now()).getYears();

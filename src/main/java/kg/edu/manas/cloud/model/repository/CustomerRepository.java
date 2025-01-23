@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
     <T> Optional<T> findByUsername(String username, Class<T> type);
     Optional<Customer> findByUsername(String username);
-    @Query("SELECT c.birthDate FROM Device d JOIN FETCH d.customer c WHERE d.id = :deviceId")
+    @Query("SELECT c.birthDate FROM Device d JOIN Customer c ON d.customer.id = c.id WHERE d.id = :deviceId")
     LocalDate getBirthDate(String deviceId);
 }
