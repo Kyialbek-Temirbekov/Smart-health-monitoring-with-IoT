@@ -1,6 +1,9 @@
 package kg.edu.manas.cloud;
 
-import kg.edu.manas.cloud.model.cache.RedisCache;
+import kg.edu.manas.cloud.model.entity.Device;
+import kg.edu.manas.cloud.model.repository.CustomerRepository;
+import kg.edu.manas.cloud.model.repository.DeviceRepository;
+import kg.edu.manas.cloud.service.EncryptionService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,14 +21,9 @@ public class CloudApplication {
 	}
 
 	@Bean
-	public CommandLineRunner commandLineRunner(RedisCache cache) {
+	public CommandLineRunner commandLineRunner(CustomerRepository customerRepository, DeviceRepository deviceRepository, EncryptionService encryptionService) {
 		return args -> {
-			System.out.println("Hello Redis");
-			cache.putWithTTL("key1", "BARAKADABRA");
-			cache.putWithTTL("key1", "barakadabra");
-			System.out.println(cache.get("key1"));
-			Thread.sleep(4000);
-			System.out.println(cache.get("key1"));
+
 		};
 	}
 }
