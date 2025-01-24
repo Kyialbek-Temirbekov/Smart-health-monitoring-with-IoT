@@ -1,6 +1,6 @@
 package kg.edu.manas.cloud.config;
 
-import kg.edu.manas.cloud.service.DataProcessingService;
+import kg.edu.manas.cloud.service.MetricHandler;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import org.springframework.messaging.MessageHandler;
 @Configuration
 @RequiredArgsConstructor
 public class MqttInboundConfig {
-    private final DataProcessingService dataProcessingService;
+    private final MetricHandler metricHandler;
 
     @Bean
     public MqttPahoClientFactory mqttInboundClientFactory() {
@@ -29,7 +29,7 @@ public class MqttInboundConfig {
 //        options.setConnectionTimeout(10);
 //        options.setUserName("SGBkRMkhhYgNcrJkx5");
 //        options.setPassword("1c1xuA90RqIXlDyolm".toCharArray());
-//        options.setAutomaticReconnect(true);
+        options.setAutomaticReconnect(true);
         factory.setConnectionOptions(options);
         return factory;
     }
@@ -56,6 +56,6 @@ public class MqttInboundConfig {
     @Bean
     @ServiceActivator(inputChannel = "mqttInputChannel")
     public MessageHandler handler() {
-        return dataProcessingService::process;
+        return metricHandler::handle;
     }
 }

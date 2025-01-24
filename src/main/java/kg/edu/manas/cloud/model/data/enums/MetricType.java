@@ -6,5 +6,6 @@ public enum MetricType {
     AIR_QUALITY,
     STEP_COUNT,
     CALORIE_BURN,
-    GPS
+    GPS,
+    UNKNOWN;
 }

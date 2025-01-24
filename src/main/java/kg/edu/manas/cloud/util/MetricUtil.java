@@ -25,7 +25,7 @@ public class MetricUtil {
             case "step-count" -> MetricType.STEP_COUNT;
             case "calorie-burn" -> MetricType.CALORIE_BURN;
             case "gps" -> MetricType.GPS;
-            default -> null;
+            default -> MetricType.UNKNOWN;
         };
     }
     public static Range getRange(int age) {

@@ -10,7 +10,6 @@ import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.handler.annotation.Header;
 
 @Configuration
@@ -24,14 +23,14 @@ public class MqttOutboundConfig {
 //        options.setConnectionTimeout(10);
 //        options.setUserName("SGBkRMkhhYlRlrMCx9");
 //        options.setPassword("G8gOOvKfJhFKK2Zsf4".toCharArray());
-//        options.setAutomaticReconnect(true);
+        options.setAutomaticReconnect(true);
         factory.setConnectionOptions(options);
         return factory;
     }
 
     @Bean
     @ServiceActivator(inputChannel = "mqttOutboundChannel")
-    public MessageHandler mqttOutbound() {
+    public MqttPahoMessageHandler mqttOutbound() {
         MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler("MqttOutbound", mqttOutboundClientFactory());
         messageHandler.setAsync(true);
         messageHandler.setDefaultTopic("mytopic");
