@@ -1,8 +1,8 @@
 package kg.edu.manas.cloud.filter;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import kg.edu.manas.cloud.model.data.constants.Messages;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -47,8 +48,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Authentication auth = new UsernamePasswordAuthenticationToken(username, null,
                         AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
                 SecurityContextHolder.getContext().setAuthentication(auth);
-            } catch (Exception e) {
+            } catch (ExpiredJwtException e) {
+                throw new CredentialsExpiredException(Messages.EXPIRED_TOKEN);
+            } catch (IllegalArgumentException | SignatureException | MalformedJwtException | UnsupportedJwtException | SecurityException | NullPointerException | ClassCastException e) {
                 throw new BadCredentialsException(Messages.INVALID_TOKEN);
+            } catch (Exception e) {
+                throw new RuntimeException();
             }
 
         }

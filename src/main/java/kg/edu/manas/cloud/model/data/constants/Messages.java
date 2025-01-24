@@ -9,12 +9,13 @@ public class Messages {
     public static final String INVALID_OPT = "Бир жолку сыр соз туура эмес";
     public static final String USER_ALREADY_EXIST = "Колдонуучу бул имейл менен катталган";
     public static final String INVALID_TOKEN = "JWT токен туура эмес";
+    public static final String EXPIRED_TOKEN = "JWT токендин мооноту буткон";
     public static final String CACHE_CLEARED = "Кэш ийгиликтуу тазаланды";
 
     /**
      * Mail
      */
-    public static final String REGISTRATION_OTP_SUB = "Катто учун бир жолку сыр соз: %s";
+    public static final String REGISTRATION_OTP_SUB = "Каттоо учун бир жолку сыр соз: %s";
     public static final String HELP_SUB = "Тез жардам";
 
     public static final String HELP_MSG = "%s алгылыктуу чектен ашты. Жайгашкан жери: https://2gis.kg/search/geo/%s. Убакыт: %s";

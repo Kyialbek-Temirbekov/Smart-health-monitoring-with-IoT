@@ -18,6 +18,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import java.io.PrintWriter;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -43,11 +45,14 @@ public class SecurityConfig {
         return (request, response, auth) -> {
             response.setStatus(401);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.getOutputStream().println(
-                    objectMapper.writeValueAsString(
-                            new ErrorResponseRecord(HttpStatus.UNAUTHORIZED, auth.getLocalizedMessage())
-                    )
-            );
+            response.setCharacterEncoding("UTF-8");
+            try (PrintWriter writer = response.getWriter()) {
+                writer.println(
+                        objectMapper.writeValueAsString(
+                                new ErrorResponseRecord(HttpStatus.UNAUTHORIZED, auth.getLocalizedMessage())
+                        )
+                );
+            }
         };
     }
 
