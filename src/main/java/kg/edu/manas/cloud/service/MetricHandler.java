@@ -47,7 +47,6 @@ public class MetricHandler {
             String deviceId = parts[1];
 
             if(metricType.equals(MetricType.UNKNOWN)) {
-                log.info("Message: " + message.getPayload() + ", topic: " + topic);
                 return;
             }
 
@@ -112,7 +111,6 @@ public class MetricHandler {
             case CRITICAL -> {
                 mqttGateway.sendToMqtt(String.format(TOPIC_CRITICAL_MSG, metricName), "device/" + plainDeviceId + "/msg");
                 log.warn(level + ": " + metricName + ": " + plainDeviceId);
-                System.out.println("Send notification via web socket"); // to do
             }
             case EMERGENCY -> {
                 var gps = metricRepository.findFirstByDeviceIdAndTypeOrderByTimestampDesc(metric.getDeviceId(), MetricType.GPS);
