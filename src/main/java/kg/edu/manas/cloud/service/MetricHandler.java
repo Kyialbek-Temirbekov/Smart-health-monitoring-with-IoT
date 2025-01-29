@@ -63,7 +63,7 @@ public class MetricHandler {
 
             metricRepository.save(metric);
         } catch (Exception e) {
-            log.error("Error processing metrics. ", e);
+            log.error("Error processing metrics", e);
         }
     }
 
@@ -106,11 +106,9 @@ public class MetricHandler {
             case NORMAL -> {}
             case WARNING -> {
                 mqttGateway.sendToMqtt(String.format(TOPIC_WARNING_MSG, metricName), "device/" + plainDeviceId + "/msg");
-                log.warn(level + ": " + metricName + ": " + plainDeviceId);
             }
             case CRITICAL -> {
                 mqttGateway.sendToMqtt(String.format(TOPIC_CRITICAL_MSG, metricName), "device/" + plainDeviceId + "/msg");
-                log.warn(level + ": " + metricName + ": " + plainDeviceId);
             }
             case EMERGENCY -> {
                 var gps = metricRepository.findFirstByDeviceIdAndTypeOrderByTimestampDesc(metric.getDeviceId(), MetricType.GPS);
@@ -122,9 +120,10 @@ public class MetricHandler {
                         HELP_SUB,
                         String.format(HELP_MSG, metricName, gpsValue, timestamp)
                 ));
-
-                log.warn(level + ": " + metricName + ": " + plainDeviceId);
             }
+        }
+        if(!level.equals(Level.NORMAL)) {
+            log.warn("{}: {}: {}", level, metricName, metric.getValue());
         }
     }
 }
