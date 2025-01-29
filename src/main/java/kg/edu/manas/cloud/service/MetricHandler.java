@@ -80,7 +80,7 @@ public class MetricHandler {
                 .findFirst().orElseThrow().getLevel();
 
         var alert = new AlertCacheRecord(metricType, level);
-        if(shouldAnnounce(alert, deviceIdCipher)) {
+        if(shouldAnnounce(alert, deviceIdCipher) && !level.equals(Level.NORMAL)) {
             redisCache.putWithTTL(deviceIdCipher, alert);
             announce(metric, level, plainDeviceId);
         }
@@ -122,8 +122,6 @@ public class MetricHandler {
                 ));
             }
         }
-        if(!level.equals(Level.NORMAL)) {
-            log.warn("{}: {}: {}", level, metricName, metric.getValue());
-        }
+        log.warn("{}: {}: {}", level, metricName, metric.getValue());
     }
 }
