@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -21,4 +22,8 @@ public class Device {
     private Customer customer;
     @OneToMany(mappedBy = "device")
     private List<Metric> metrics;
+    private String brand;
+    private String model;
+    private LocalDate releaseDate;
+    private String batteryLife;
 }
