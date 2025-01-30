@@ -25,7 +25,7 @@ public class MqttInboundConfig {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setServerURIs(new String[]{"tcp://localhost:1884"});
         options.setCleanSession(false);
-//        options.setKeepAliveInterval(30);
+        options.setKeepAliveInterval(60);
 //        options.setConnectionTimeout(10);
 //        options.setUserName("SGBkRMkhhYgNcrJkx5");
 //        options.setPassword("1c1xuA90RqIXlDyolm".toCharArray());

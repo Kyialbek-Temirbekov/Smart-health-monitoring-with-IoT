@@ -19,7 +19,7 @@ public class MqttOutboundConfig {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
         options.setServerURIs(new String[]{"tcp://localhost:1884"});
-//        options.setKeepAliveInterval(30);
+        options.setKeepAliveInterval(60);
 //        options.setConnectionTimeout(10);
 //        options.setUserName("SGBkRMkhhYlRlrMCx9");
 //        options.setPassword("G8gOOvKfJhFKK2Zsf4".toCharArray());
