@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kg.edu.manas.cloud.model.data.record.CreateCustomerRecord;
 import kg.edu.manas.cloud.model.data.record.CustomerRecord;
 import kg.edu.manas.cloud.model.data.record.OtpRecord;
+import kg.edu.manas.cloud.model.data.record.UpdateCustomerRecord;
 import kg.edu.manas.cloud.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,12 @@ public class CustomerController {
     @PatchMapping("/confirm-email")
     public ResponseEntity<String> confirmEmail(@RequestBody OtpRecord otpRecord) {
         customerService.confirmEmail(otpRecord);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @Operation(summary = "update customer")
+    @PatchMapping()
+    public ResponseEntity<String> updateCustomer(@RequestBody UpdateCustomerRecord customerRecord) {
+        customerService.updateCustomer(customerRecord);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PostMapping("/signIn")

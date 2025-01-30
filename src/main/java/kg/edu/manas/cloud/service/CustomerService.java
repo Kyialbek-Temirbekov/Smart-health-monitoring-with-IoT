@@ -1,12 +1,12 @@
 package kg.edu.manas.cloud.service;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.Root;
 import kg.edu.manas.cloud.model.data.constants.Messages;
-import kg.edu.manas.cloud.model.data.record.CreateCustomerRecord;
-import kg.edu.manas.cloud.model.data.record.CustomerRecord;
-import kg.edu.manas.cloud.model.data.record.EmailMessageRecord;
-import kg.edu.manas.cloud.model.data.record.OtpRecord;
+import kg.edu.manas.cloud.model.data.record.*;
 import kg.edu.manas.cloud.model.entity.Customer;
 import kg.edu.manas.cloud.model.entity.Otp;
 import kg.edu.manas.cloud.exception.ConflictException;
@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,6 +38,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
+    private final EntityManager entityManager;
     private final CustomerRepository customerRepository;
     private final OtpRepository otpRepository;
     private final EmailNotificationService emailNotificationService;
@@ -98,6 +100,19 @@ public class CustomerService {
         } else {
             throw new EntityNotFoundException(Messages.USER_NOT_FOUND);
         }
+    }
+
+    @Transactional
+    public void updateCustomer(UpdateCustomerRecord customerRecord) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaUpdate<Customer> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Customer.class);
+        Root<Customer> root = criteriaUpdate.from(Customer.class);
+
+        criteriaUpdate.set(root.get("name"), customerRecord.name());
+        criteriaUpdate.set(root.get("birthDate"), customerRecord.birthDate());
+        criteriaUpdate.where(criteriaBuilder.equal(root.get("username"), getPrincipal()));
+
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
     }
 
     public String signIn(Authentication authentication) {
