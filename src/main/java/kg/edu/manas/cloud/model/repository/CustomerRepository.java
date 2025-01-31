@@ -14,4 +14,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     Optional<Customer> findByUsername(String username);
     @Query("SELECT c.birthDate FROM Device d JOIN Customer c ON d.customer.id = c.id WHERE d.id = :deviceId")
     LocalDate getBirthDate(String deviceId);
+    @Query("SELECT c.name FROM Customer c JOIN Device d ON d.customer.id = c.id WHERE d.id = :deviceId")
+    String getName(String deviceId);
 }

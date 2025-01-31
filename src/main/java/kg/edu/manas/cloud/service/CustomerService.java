@@ -160,4 +160,8 @@ public class CustomerService {
         var birthDate = customerRepository.getBirthDate(deviceId);
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
+
+    public String getName(String deviceId) {
+        return customerRepository.getName(deviceId);
+    }
 }

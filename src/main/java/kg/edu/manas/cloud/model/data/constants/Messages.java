@@ -18,7 +18,7 @@ public class Messages {
     public static final String REGISTRATION_OTP_SUB = "Каттоо учун бир жолку сыр соз: %s";
     public static final String HELP_SUB = "Тез жардам";
 
-    public static final String HELP_MSG = "%s алгылыктуу чектен ашты. Жайгашкан жери: https://2gis.kg/search/geo/%s. Убакыт: %s";
+    public static final String HELP_MSG = "%s үчүн %s алгылыктуу чектен ашты. Жайгашкан жери: https://2gis.kg/search/geo/%s. Убакыт: %s";
     // https://2gis.kg/search/geo/74.576216479763389,42.832382144897558
 
     /**

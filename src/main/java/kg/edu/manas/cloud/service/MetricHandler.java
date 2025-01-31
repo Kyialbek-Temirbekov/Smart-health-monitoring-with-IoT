@@ -114,11 +114,12 @@ public class MetricHandler {
                 var gps = metricRepository.findFirstByDeviceIdAndTypeOrderByTimestampDesc(metric.getDeviceId(), MetricType.GPS);
                 String gpsValue = gps.map(Metric::getValue).orElse("_");
                 String timestamp = gps.map(value -> DateTimeUtil.format(value.getTimestamp())).orElse("_");
+                String user = customerService.getName(metric.getDeviceId());
 
                 emailNotificationService.sendMessage(new EmailMessageRecord(
                         emergencyMail,
                         HELP_SUB,
-                        String.format(HELP_MSG, metricName, gpsValue, timestamp)
+                        String.format(HELP_MSG, user, metricName, gpsValue, timestamp)
                 ));
             }
         }
