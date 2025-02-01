@@ -42,7 +42,7 @@ public class MetricUtil {
     public static boolean isPriorityHigher(Level subject, Level object) {
         return subject.ordinal() > object.ordinal();
     }
-    public static boolean isPriorityLower(Level subject, Level object) {
-        return subject.ordinal() < object.ordinal();
+    public static boolean isPriorityEqual(Level subject, Level object) {
+        return subject.ordinal() == object.ordinal();
     }
 }

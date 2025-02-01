@@ -5,5 +5,5 @@ import kg.edu.manas.cloud.model.data.enums.MetricType;
 
 import java.io.Serializable;
 
-public record AlertCacheRecord(MetricType metric, Level level) implements Serializable {
+public record AlertCacheRecord(Level level, long timestamp, int count, boolean sent) implements Serializable {
 }

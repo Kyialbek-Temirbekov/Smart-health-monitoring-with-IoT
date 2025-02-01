@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import static kg.edu.manas.cloud.model.data.constants.Messages.*;
 import static kg.edu.manas.cloud.util.MetricUtil.isPriorityHigher;
-import static kg.edu.manas.cloud.util.MetricUtil.isPriorityLower;
+import static kg.edu.manas.cloud.util.MetricUtil.isPriorityEqual;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +71,7 @@ public class MetricHandler {
         String deviceIdCipher = metric.getDeviceId();
         var metricType = metric.getType();
         int value = Integer.parseInt(metric.getValue());
+        var index = metricType.toString() + deviceIdCipher;
         int age = customerService.getAge(deviceIdCipher);
         var ranges = List.of(Range.ALL, MetricUtil.getRange(age));
 
@@ -79,25 +80,52 @@ public class MetricHandler {
                 .filter(config -> value >= config.getMin() && value <= config.getMax())
                 .findFirst().orElseThrow().getLevel();
 
-        var alert = new AlertCacheRecord(metricType, level);
-        if(shouldAnnounce(alert, deviceIdCipher) && !level.equals(Level.NORMAL)) {
-            redisCache.putWithTTL(deviceIdCipher, alert);
-            announce(metric, level, plainDeviceId);
-        }
-    }
+        var alert = new AlertCacheRecord(level, System.currentTimeMillis(), 0, false);
 
-    private boolean shouldAnnounce(AlertCacheRecord alert, String deviceIdCipher) {
-        var alertOpt = redisCache.get(deviceIdCipher);
+        //sent
+        //timestamp
+        //level
+        //count
+
+        var alertOpt = redisCache.get(index);
         if(alertOpt.isPresent()) {
             AlertCacheRecord alertCache = (AlertCacheRecord) alertOpt.get();
-            if(alert.metric().equals(alertCache.metric())) {
-                return isPriorityHigher(alert.level(), alertCache.level());
-            } else {
-                return !isPriorityLower(alert.level(), alertCache.level());
+            if(!alertCache.sent()) {
+                if(isPriorityHigher(alert.level(), alertCache.level())) {
+                    announce(metric, level, plainDeviceId);
+                    redisCache.putWithTTL(index, alert);
+                }
+                if(isPriorityEqual(alert.level(), alertCache.level())) {
+                    var blockingPeriod = Math.abs(System.currentTimeMillis() - alertCache.timestamp()) / 60000;
+                    if(blockingPeriod < 40) {
+                        // increment count
+                    } else {
+                        // check threshold
+                        // send alert
+                        // set sent flag
+                        // or remove
+                    }
+                }
             }
+        } else {
+            redisCache.putWithTTL(index, alert);
         }
-        return true;
+
+
+//        if(shouldAnnounce(alert, index) && !level.equals(Level.NORMAL)) {
+//            redisCache.putWithTTL(index, alert);
+//            announce(metric, level, plainDeviceId);
+//        }
     }
+
+//    private boolean shouldAnnounce(AlertCacheRecord alert, String index) {
+//        var alertOpt = redisCache.get(index);
+//        if(alertOpt.isPresent()) {
+//            AlertCacheRecord alertCache = (AlertCacheRecord) alertOpt.get();
+//            return isPriorityHigher(alert.level(), alertCache.level());
+//        }
+//        return true;
+//    }
 
     private void announce(Metric metric, Level level, String plainDeviceId) {
         String metricName = MetricUtil.getMetricName(metric.getType());
