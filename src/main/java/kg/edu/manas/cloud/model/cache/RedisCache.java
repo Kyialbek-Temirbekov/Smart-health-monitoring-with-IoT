@@ -15,7 +15,13 @@ public class RedisCache {
     public Optional<Object> get(String id) {
         return Optional.ofNullable(redisTemplate.opsForValue().get(id));
     }
-    public void putWithTTL(String id, Object value) {
-        redisTemplate.opsForValue().set(id, value, 20, TimeUnit.MINUTES);
+    public void putWithTTL(String id, Object value, long timeout) {
+        redisTemplate.opsForValue().set(id, value, timeout, TimeUnit.MINUTES);
+    }
+    public long getExpire(String id) {
+        return redisTemplate.getExpire(id);
+    }
+    public void remove(String id) {
+        redisTemplate.delete(id);
     }
 }

@@ -5,6 +5,7 @@ import kg.edu.manas.cloud.model.cache.RedisCache;
 import kg.edu.manas.cloud.model.data.enums.Level;
 import kg.edu.manas.cloud.model.data.enums.MetricType;
 import kg.edu.manas.cloud.model.data.enums.Range;
+import kg.edu.manas.cloud.model.data.property.AlertTimingProperties;
 import kg.edu.manas.cloud.model.data.record.AlertCacheRecord;
 import kg.edu.manas.cloud.model.data.record.EmailMessageRecord;
 import kg.edu.manas.cloud.model.entity.Metric;
@@ -31,6 +32,7 @@ import static kg.edu.manas.cloud.util.MetricUtil.isPriorityEqual;
 public class MetricHandler {
     @Value("${application.emergency.mail}")
     private String emergencyMail;
+    private final AlertTimingProperties timing;
     private final MqttOutboundConfig.MqttGateway mqttGateway;
     private final EmailNotificationService emailNotificationService;
     private final EncryptionService encryptionService;
@@ -74,70 +76,76 @@ public class MetricHandler {
         var index = metricType.toString() + deviceIdCipher;
         int age = customerService.getAge(deviceIdCipher);
         var ranges = List.of(Range.ALL, MetricUtil.getRange(age));
+        Level level = getLevelForMetric(metricType,value,ranges);
 
-        Level level = configService.findAll().get(metricType).stream()
-                .filter(config -> ranges.contains(config.getRange()))
-                .filter(config -> value >= config.getMin() && value <= config.getMax())
-                .findFirst().orElseThrow().getLevel();
-
-        var alert = new AlertCacheRecord(level, System.currentTimeMillis(), 0, false);
-
-        //sent
-        //timestamp
-        //level
-        //count
-
-        var alertOpt = redisCache.get(index);
-        if(alertOpt.isPresent()) {
-            AlertCacheRecord alertCache = (AlertCacheRecord) alertOpt.get();
-            if(!alertCache.sent()) {
-                if(isPriorityHigher(alert.level(), alertCache.level())) {
-                    announce(metric, level, plainDeviceId);
-                    redisCache.putWithTTL(index, alert);
-                }
-                if(isPriorityEqual(alert.level(), alertCache.level())) {
-                    var blockingPeriod = Math.abs(System.currentTimeMillis() - alertCache.timestamp()) / 60000;
-                    if(blockingPeriod < 40) {
-                        // increment count
-                    } else {
-                        // check threshold
-                        // send alert
-                        // set sent flag
-                        // or remove
-                    }
-                }
-            }
-        } else {
-            redisCache.putWithTTL(index, alert);
+        if (level.equals(Level.NORMAL)) {
+            return;
         }
 
+        var alert = new AlertCacheRecord(level, System.currentTimeMillis(), 0, false);
+        var alertOpt = redisCache.get(index);
 
-//        if(shouldAnnounce(alert, index) && !level.equals(Level.NORMAL)) {
-//            redisCache.putWithTTL(index, alert);
-//            announce(metric, level, plainDeviceId);
-//        }
+        alertOpt.ifPresentOrElse(alertCache -> handleExistingAlert(metric, plainDeviceId, index, level, alert, alertCache),
+                () -> handleNewAlert(metric, plainDeviceId, index, level, alert));
     }
 
-//    private boolean shouldAnnounce(AlertCacheRecord alert, String index) {
-//        var alertOpt = redisCache.get(index);
-//        if(alertOpt.isPresent()) {
-//            AlertCacheRecord alertCache = (AlertCacheRecord) alertOpt.get();
-//            return isPriorityHigher(alert.level(), alertCache.level());
-//        }
-//        return true;
-//    }
+    private Level getLevelForMetric(MetricType metricType, int value, List<Range> ranges) {
+        return configService.findAll().get(metricType).stream()
+                .filter(config -> ranges.contains(config.getRange()))
+                .filter(config -> value >= config.getMin() && value <= config.getMax())
+                .findFirst()
+                .orElseThrow()
+                .getLevel();
+    }
+
+    private void handleExistingAlert(Metric metric, String plainDeviceId, String index, Level level, AlertCacheRecord alert, Object alertCacheObj) {
+        AlertCacheRecord alertCache = (AlertCacheRecord) alertCacheObj;
+        if(!alertCache.isSent()) {
+            if(isPriorityHigher(alert.getLevel(), alertCache.getLevel())) {
+                announce(metric, level, plainDeviceId);
+                redisCache.putWithTTL(index, alert, timing.getTtl());
+            }
+            else if(isPriorityEqual(alert.getLevel(), alertCache.getLevel())) {
+                handleEqualPriorityAlert(metric, plainDeviceId, index, level, alertCache);
+            }
+        }
+    }
+
+    private void handleEqualPriorityAlert(Metric metric, String plainDeviceId, String index, Level level, AlertCacheRecord alertCache) {
+        var waitingPeriod = Math.abs(System.currentTimeMillis() - alertCache.getTimestamp());
+
+        if(waitingPeriod < (timing.getWaiting() * 60000L)) {
+            long ttl = redisCache.getExpire(index);
+            alertCache.setCount(alertCache.getCount() + 1);
+            redisCache.putWithTTL(index, alertCache, ttl);
+        } else {
+            if(alertCache.getCount() > (120 * 0.4)) {
+                announce(metric, level, plainDeviceId);
+                alertCache.setSent(true);
+                redisCache.putWithTTL(index, alertCache, timing.getBlock());
+            } else {
+                redisCache.remove(index);
+            }
+        }
+    }
+
+    private void handleNewAlert(Metric metric, String plainDeviceId, String index, Level level, AlertCacheRecord alert) {
+        if(level.equals(Level.EMERGENCY)) {
+            announce(metric, level, plainDeviceId);
+            alert.setSent(true);
+            redisCache.putWithTTL(index, alert, timing.getEBlock());
+        } else {
+            redisCache.putWithTTL(index, alert, timing.getTtl());
+        }
+    }
 
     private void announce(Metric metric, Level level, String plainDeviceId) {
         String metricName = MetricUtil.getMetricName(metric.getType());
 
         switch (level) {
             case NORMAL -> {}
-            case WARNING -> {
-                mqttGateway.sendToMqtt(String.format(TOPIC_WARNING_MSG, metricName), "device/" + plainDeviceId + "/msg");
-            }
-            case CRITICAL -> {
-                mqttGateway.sendToMqtt(String.format(TOPIC_CRITICAL_MSG, metricName), "device/" + plainDeviceId + "/msg");
-            }
+            case WARNING -> mqttGateway.sendToMqtt(String.format(TOPIC_WARNING_MSG, metricName), "device/" + plainDeviceId + "/msg");
+            case CRITICAL -> mqttGateway.sendToMqtt(String.format(TOPIC_CRITICAL_MSG, metricName), "device/" + plainDeviceId + "/msg");
             case EMERGENCY -> {
                 var gps = metricRepository.findFirstByDeviceIdAndTypeOrderByTimestampDesc(metric.getDeviceId(), MetricType.GPS);
                 String gpsValue = gps.map(Metric::getValue).orElse("_");

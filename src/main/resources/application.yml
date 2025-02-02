@@ -9,6 +9,11 @@ application:
     secretKey: rEMi9yyfvH0AfSOfgqvSeE8h0GLQaflu7VxRrcExTGo=
     algorithm: AES
     cipherMode: AES/ECB/PKCS5Padding
+  alert:
+    ttl: 25
+    waiting: 20
+    block: 10
+    eBlock: 60
   emergency:
     mail: 2004.01035@manas.edu.kg
 
