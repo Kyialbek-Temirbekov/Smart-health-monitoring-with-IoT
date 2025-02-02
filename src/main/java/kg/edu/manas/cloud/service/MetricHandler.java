@@ -82,7 +82,7 @@ public class MetricHandler {
             return;
         }
 
-        var alert = new AlertCacheRecord(level, System.currentTimeMillis(), 0, false);
+        var alert = new AlertCacheRecord(level, System.currentTimeMillis(), 1, false);
         var alertOpt = redisCache.get(index);
 
         alertOpt.ifPresentOrElse(alertCache -> handleExistingAlert(metric, plainDeviceId, index, level, alert, alertCache),
