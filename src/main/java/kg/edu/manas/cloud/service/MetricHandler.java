@@ -102,8 +102,13 @@ public class MetricHandler {
         AlertCacheRecord alertCache = (AlertCacheRecord) alertCacheObj;
         if(!alertCache.isSent()) {
             if(isPriorityHigher(alert.getLevel(), alertCache.getLevel())) {
-                announce(metric, alertCache.getLevel(), plainDeviceId);
-                redisCache.putWithTTL(index, alert, timing.getTtl());
+                if(level.equals(Level.EMERGENCY)) {
+                    handleEmergencyAlert(metric, plainDeviceId, index, level, alertCache);
+                }
+                else {
+                    announce(metric, alertCache.getLevel(), plainDeviceId);
+                    redisCache.putWithTTL(index, alert, timing.getTtl());
+                }
             }
             else if(isPriorityEqual(alert.getLevel(), alertCache.getLevel())) {
                 handleEqualPriorityAlert(metric, plainDeviceId, index, level, alertCache);
@@ -131,12 +136,16 @@ public class MetricHandler {
 
     private void handleNewAlert(Metric metric, String plainDeviceId, String index, Level level, AlertCacheRecord alert) {
         if(level.equals(Level.EMERGENCY)) {
-            announce(metric, level, plainDeviceId);
-            alert.setSent(true);
-            redisCache.putWithTTL(index, alert, timing.getEBlock());
+            handleEmergencyAlert(metric, plainDeviceId, index, level, alert);
         } else {
             redisCache.putWithTTL(index, alert, timing.getTtl());
         }
+    }
+
+    private void handleEmergencyAlert(Metric metric, String plainDeviceId, String index, Level level, AlertCacheRecord alert) {
+        announce(metric, level, plainDeviceId);
+        alert.setSent(true);
+        redisCache.putWithTTL(index, alert, timing.getEBlock());
     }
 
     private void announce(Metric metric, Level level, String plainDeviceId) {
