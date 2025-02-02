@@ -102,7 +102,7 @@ public class MetricHandler {
         AlertCacheRecord alertCache = (AlertCacheRecord) alertCacheObj;
         if(!alertCache.isSent()) {
             if(isPriorityHigher(alert.getLevel(), alertCache.getLevel())) {
-                announce(metric, level, plainDeviceId);
+                announce(metric, alertCache.getLevel(), plainDeviceId);
                 redisCache.putWithTTL(index, alert, timing.getTtl());
             }
             else if(isPriorityEqual(alert.getLevel(), alertCache.getLevel())) {
