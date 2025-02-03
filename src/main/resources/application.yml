@@ -47,3 +47,6 @@ spring:
           auth: true
           starttls:
             enable: true
+logging:
+  level:
+    kg.edu.manas.cloud: DEBUG
