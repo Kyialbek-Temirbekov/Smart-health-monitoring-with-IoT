@@ -82,6 +82,8 @@ public class MetricHandler {
             return;
         }
 
+        log.debug("Processing metric. Index: {}", index);
+
         var alert = new AlertCacheRecord(level, System.currentTimeMillis(), 1, false);
         var alertOpt = redisCache.get(index);
 
@@ -108,11 +110,15 @@ public class MetricHandler {
                 else {
                     announce(metric, alertCache.getLevel(), plainDeviceId);
                     redisCache.putWithTTL(index, alert, timing.getTtl());
+                    log.debug("Sent alert from cache. New high priority alert replaced it");
                 }
             }
             else if(isPriorityEqual(alert.getLevel(), alertCache.getLevel())) {
+                log.debug("New alert priority is same");
                 handleEqualPriorityAlert(metric, plainDeviceId, index, level, alertCache);
             }
+        } else {
+            log.debug("Blocking period");
         }
     }
 
@@ -123,13 +129,17 @@ public class MetricHandler {
             long ttl = redisCache.getExpire(index);
             alertCache.setCount(alertCache.getCount() + 1);
             redisCache.putWithTTL(index, alertCache, ttl);
+            log.debug("Waiting period hasn't expired yet. Incremented count");
         } else {
+            log.debug("Waiting period has expired");
             if(alertCache.getCount() > (120 * 0.4)) {
                 announce(metric, level, plainDeviceId);
                 alertCache.setSent(true);
                 redisCache.putWithTTL(index, alertCache, timing.getBlock());
+                log.debug("Alert threshold has been reached. Alert has been sent. The blocking time is set");
             } else {
                 redisCache.remove(index);
+                log.debug("Alert threshold hasn't been reached. Alert is removed");
             }
         }
     }
@@ -139,6 +149,7 @@ public class MetricHandler {
             handleEmergencyAlert(metric, plainDeviceId, index, level, alert);
         } else {
             redisCache.putWithTTL(index, alert, timing.getTtl());
+            log.debug("Put new alert to cache");
         }
     }
 
@@ -146,6 +157,7 @@ public class MetricHandler {
         announce(metric, level, plainDeviceId);
         alert.setSent(true);
         redisCache.putWithTTL(index, alert, timing.getEBlock());
+        log.debug("Sent emergency alert immediately");
     }
 
     private void announce(Metric metric, Level level, String plainDeviceId) {
