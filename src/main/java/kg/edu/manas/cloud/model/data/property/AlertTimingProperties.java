@@ -14,4 +14,6 @@ public class AlertTimingProperties {
     private int waiting;
     private int block;
     private int eBlock;
+    private int total;
+    private float threshold;
 }

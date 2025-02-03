@@ -132,7 +132,7 @@ public class MetricHandler {
             log.debug("Waiting period hasn't expired yet. Incremented count");
         } else {
             log.debug("Waiting period has expired");
-            if(alertCache.getCount() > (120 * 0.4)) {
+            if(alertCache.getCount() > (timing.getTotal() * timing.getThreshold())) {
                 announce(metric, level, plainDeviceId);
                 alertCache.setSent(true);
                 redisCache.putWithTTL(index, alertCache, timing.getBlock());
