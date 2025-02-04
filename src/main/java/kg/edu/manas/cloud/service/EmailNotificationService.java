@@ -8,6 +8,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.CompletableFuture;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -24,5 +26,8 @@ public class EmailNotificationService {
         } catch (MailException e) {
             log.warn(e.getLocalizedMessage());
         }
+    }
+    public void sendMessageAsync(EmailMessageRecord message) {
+        CompletableFuture.runAsync(() -> sendMessage(message));
     }
 }

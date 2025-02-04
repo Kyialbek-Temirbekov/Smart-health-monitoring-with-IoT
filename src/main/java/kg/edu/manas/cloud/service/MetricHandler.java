@@ -173,7 +173,7 @@ public class MetricHandler {
                 String timestamp = gps.map(value -> DateTimeUtil.format(value.getTimestamp())).orElse("_");
                 String user = customerService.getName(metric.getDeviceId());
 
-                emailNotificationService.sendMessage(new EmailMessageRecord(
+                emailNotificationService.sendMessageAsync(new EmailMessageRecord(
                         emergencyMail,
                         HELP_SUB,
                         String.format(HELP_MSG, user, metricName, gpsValue, timestamp)
