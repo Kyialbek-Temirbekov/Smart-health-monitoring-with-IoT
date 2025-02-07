@@ -19,8 +19,12 @@ import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static kg.edu.manas.cloud.model.data.constants.Messages.*;
 import static kg.edu.manas.cloud.util.MetricUtil.isPriorityHigher;
@@ -47,6 +51,11 @@ public class MetricHandler {
             String[] parts = topic.split("/");
             MetricType metricType = MetricUtil.getMetricType(parts[2]);
             String deviceId = parts[1];
+            var timestamp = Optional.ofNullable(message.getHeaders().getTimestamp())
+                    .map(ts -> Instant.ofEpochMilli(ts)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime())
+                    .orElse(LocalDateTime.now());
 
             if(metricType.equals(MetricType.UNKNOWN)) {
                 return;
@@ -55,7 +64,7 @@ public class MetricHandler {
             var metric = Metric.builder()
                     .type(metricType)
                     .value(message.getPayload().toString())
-                    .timestamp(message.getHeaders().getTimestamp())
+                    .timestamp(timestamp)
                     .deviceId(encryptionService.encrypt(deviceId)).build();
 
             switch (metricType) {
