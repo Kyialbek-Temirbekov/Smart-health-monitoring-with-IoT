@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
+@IdClass(MetricKey.class)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,6 +23,8 @@ public class Metric {
     @Enumerated(EnumType.STRING)
     private MetricType type;
     private String value;
+    @Id
+    @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private LocalDateTime timestamp;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id", referencedColumnName = "id", insertable = false, updatable = false)
