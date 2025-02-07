@@ -2,15 +2,41 @@ package kg.edu.manas.cloud.model.entity;
 
 import jakarta.persistence.*;
 import kg.edu.manas.cloud.model.data.enums.MetricType;
+import kg.edu.manas.cloud.model.data.record.MetricChartRecord;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
 @IdClass(MetricKey.class)
+@SqlResultSetMapping(
+        name = "MetricChartRecordMapping",
+        classes = @ConstructorResult(
+                targetClass = MetricChartRecord.class,
+                columns = {
+                        @ColumnResult(name = "epoch", type = Instant.class),
+                        @ColumnResult(name = "average", type = Float.class),
+                        @ColumnResult(name = "maxValue", type = Float.class),
+                        @ColumnResult(name = "minValue", type = Float.class)
+                }
+        )
+)
+@NamedNativeQuery(name = "MetricChartQuery",
+        query = """
+        select time_bucket('2 min', timestamp) as epoch,
+               avg(cast(value as float)) as average,
+               max(cast(value as float)) as maxValue,
+               min(cast(value as float)) as minValue
+        from metric
+        where device_id = :deviceId and type = :type and date(timestamp) = :targetDay
+        group by epoch
+        order by epoch
+    """, resultSetMapping = "MetricChartRecordMapping"
+)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,7 +50,7 @@ public class Metric {
     private MetricType type;
     private String value;
     @Id
-    @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    @Column(nullable = false)
     private LocalDateTime timestamp;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id", referencedColumnName = "id", insertable = false, updatable = false)
