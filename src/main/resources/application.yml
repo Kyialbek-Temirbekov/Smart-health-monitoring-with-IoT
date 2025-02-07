@@ -23,7 +23,7 @@ spring:
   application:
     name: "cloud"
   datasource:
-    url: jdbc:postgresql://localhost:5432/iot_ht
+    url: jdbc:postgresql://localhost:5434/cloud_iot
     driverClassName: org.postgresql.Driver
     username: postgres
     password: postgres
