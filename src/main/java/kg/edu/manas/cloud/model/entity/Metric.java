@@ -32,7 +32,9 @@ import java.time.LocalDateTime;
                max(cast(value as float)) as maxValue,
                min(cast(value as float)) as minValue
         from metric
-        where device_id = :deviceId and type = :type and date(timestamp) = :targetDay
+        where device_id = :deviceId and type = :type
+        and timestamp >= :targetDay
+        and timestamp < cast(:targetDay as date) + interval '1 day'
         group by epoch
         order by epoch
     """, resultSetMapping = "MetricChartRecordMapping"
