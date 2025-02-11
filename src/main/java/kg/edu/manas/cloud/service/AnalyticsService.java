@@ -22,13 +22,12 @@ public class AnalyticsService {
         return new Object[] {mean, stdDev};
     }
     public double findCorrelation(String deviceId, String xType, String yType, LocalDate targetDay) throws ExecutionException, InterruptedException {
+        var yValues = CompletableFuture.supplyAsync(
+                () -> Arrays.stream(metricRepository.getValues(deviceId, yType, targetDay)).mapToDouble(o -> (Double) o).toArray()
+        );
         return StatisticsUtil.findPearsonsCorrelation(
-                CompletableFuture.supplyAsync(
-                        () -> Arrays.stream(metricRepository.getValues(deviceId, xType, targetDay)).mapToDouble(o -> (Double) o).toArray()
-                ).get(),
-                CompletableFuture.supplyAsync(
-                        () -> Arrays.stream(metricRepository.getValues(deviceId, yType, targetDay)).mapToDouble(o -> (Double) o).toArray()
-                ).get()
+                Arrays.stream(metricRepository.getValues(deviceId, xType, targetDay)).mapToDouble(o -> (Double) o).toArray(),
+                yValues.get()
         );
     }
 }
