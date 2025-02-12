@@ -29,12 +29,12 @@ public class Test {
         newData.setValue(1, 150); // Шаги
 
         double[] prediction = loadedModel.distributionForInstance(newData);
-        System.out.println("Вероятность болезни: " + prediction[1]);
+        System.out.println("Probability of disease: " + prediction[1]);
 
         if (prediction[1] > 0.5) {
-            System.out.println("⚠️ Высокий риск заболевания!");
+            System.out.println("⚠️ High risk of disease!");
         } else {
-            System.out.println("✅ Низкий риск заболевания.");
+            System.out.println("✅ Low risk of disease.");
         }
     }
 }
