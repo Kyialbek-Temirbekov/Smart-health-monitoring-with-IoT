@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Otp {
     @Id
-    private Long customerId;
+    private String customerId;
     private String value;
     private LocalDateTime expiryTime;
     @OneToOne

@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,9 +21,8 @@ import java.util.List;
 @Builder
 public class Customer implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_id_gen")
-    @SequenceGenerator(name = "customer_id_gen", sequenceName = "customer_seq", allocationSize = 1)
-    private Long id;
+    @UuidGenerator
+    private String id;
     private String username;
     private String password;
     private String name;
@@ -29,6 +30,11 @@ public class Customer implements UserDetails {
     private boolean isEnabled;
     @OneToMany(mappedBy = "customer")
     private List<Device> devices;
+    @OneToMany(mappedBy = "doctor")
+    private List<Customer> patients = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    private Customer doctor;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

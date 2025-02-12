@@ -16,6 +16,8 @@ import kg.edu.manas.cloud.security.JwtService;
 import kg.edu.manas.cloud.util.NumericTokenGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
@@ -29,10 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -151,7 +150,7 @@ public class CustomerService {
         }
     }
 
-    public void delete(Long id) {
+    public void delete(String id) {
         customerRepository.deleteById(id);
     }
 
@@ -165,9 +164,35 @@ public class CustomerService {
         return customerRepository.getName(deviceId);
     }
 
-    // Pre Authorize: Role medic
+    @Transactional
+    public String subscribe(String userId) {
+        var patientOpt = customerRepository.findById(userId);
+        Customer patient = patientOpt.orElseThrow(EntityNotFoundException::new);
+        if(patient.getDoctor() == null) {
+            Customer currentUser = getLoggedInUser();
+            patient.setDoctor(currentUser);
+            currentUser.getPatients().add(patient);
+            return "Пациет ийгиликтүү кошулду";
+        }
+        else {
+            return "Пациенттин жеке доктору бар";
+        }
+    }
+
+    @Transactional
+    public List<?> getPatients() {
+        return getLoggedInUser().getPatients().stream().map(customer -> Map.of(
+                "name", customer.getName(),
+                "username", customer.getUsername()
+        )).toList();
+    }
+
+//    @PreAuthorize("hasRole('DOCTOR')")
     public String authorizeUser(String u) {
-        // check subscription
-        return null;
+        Customer patient = customerRepository.findByUsername(u).orElseThrow(EntityNotFoundException::new);
+        if(!patient.getDoctor().getUsername().equals(getPrincipal())) {
+            throw new AccessDeniedException("User hasn't access to get patient data");
+        }
+        return u;
     }
 }
