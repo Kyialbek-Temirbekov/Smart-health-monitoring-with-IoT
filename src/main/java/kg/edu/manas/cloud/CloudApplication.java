@@ -19,15 +19,8 @@ public class CloudApplication {
 	}
 
 	@Bean
-	public CommandLineRunner commandLineRunner(AnalyticsService service) {
+	public CommandLineRunner commandLineRunner() {
 		return args -> {
-			double[] arr = new double[] { 73, 73, 77, 78, 79, 99, 98, 99, 100, 102, 102, 100};
-			double[] aar = new double[] { 0, 0, 2, 3, 3, 21, 21, 22, 24, 25, 26, 26};
-			var mean = StatisticsUtil.findMean(arr);
-			var sd = StatisticsUtil.findStandardDeviation(arr);
-			System.out.println("Mean: " + mean);
-			System.out.println("SD: " + sd + " : " + (sd / mean) * 100);
-			System.out.println("Correlation: " + StatisticsUtil.findPearsonsCorrelation(arr, aar));
 		};
 	}
 }
