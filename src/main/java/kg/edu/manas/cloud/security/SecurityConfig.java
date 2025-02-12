@@ -32,7 +32,10 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .anyRequest().permitAll())
+                        .requestMatchers("/api/customer/signUp", "api/customer/confirmEmail").permitAll()
+                        .anyRequest().permitAll()
+//                        .anyRequest().authenticated()
+                )
                 .addFilterAfter(authenticationFilter, BasicAuthenticationFilter.class)
                 .httpBasic(c -> c.authenticationEntryPoint(authenticationEntryPoint()))
                 .exceptionHandling(c -> c.authenticationEntryPoint(authenticationEntryPoint()))

@@ -164,4 +164,10 @@ public class CustomerService {
     public String getName(String deviceId) {
         return customerRepository.getName(deviceId);
     }
+
+    // Pre Authorize: Role medic
+    public String authorizeUser(String u) {
+        // check subscription
+        return null;
+    }
 }

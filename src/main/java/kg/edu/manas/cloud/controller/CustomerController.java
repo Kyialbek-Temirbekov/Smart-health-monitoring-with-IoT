@@ -23,13 +23,13 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @Operation(summary = "create customer")
-    @PostMapping()
+    @PostMapping("/signUp")
     public ResponseEntity<String> createCustomer(@RequestBody CreateCustomerRecord createCustomerRecord) {
         customerService.createCustomer(createCustomerRecord);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @Operation(summary = "confirm email")
-    @PatchMapping("/confirm-email")
+    @PatchMapping("/confirmEmail")
     public ResponseEntity<String> confirmEmail(@RequestBody OtpRecord otpRecord) {
         customerService.confirmEmail(otpRecord);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -39,6 +39,18 @@ import java.time.LocalDateTime;
         order by epoch
     """, resultSetMapping = "MetricChartRecordMapping"
 )
+@NamedNativeQuery(name = "MetricAvgChartQuery",
+        query = """
+        select time_bucket('2 min', timestamp) as epoch,
+               avg(cast(value as float)) as average
+        from metric
+        where device_id = :deviceId and type = :type
+        and timestamp >= :targetDay
+        and timestamp < cast(:targetDay as date) + interval '1 day'
+        group by epoch
+        order by epoch
+    """, resultSetMapping = "MetricChartRecordMapping"
+)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

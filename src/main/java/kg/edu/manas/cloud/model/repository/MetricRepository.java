@@ -16,6 +16,8 @@ public interface MetricRepository extends JpaRepository<Metric, Long> {
     Optional<Metric> findFirstByDeviceIdAndTypeOrderByTimestampDesc(String deviceId, MetricType type);
     @Query(name = "MetricChartQuery", nativeQuery = true)
     List<MetricChartRecord> getTimeBuckets(String deviceId, String type, LocalDate targetDay);
+    @Query(name = "MetricAvgChartQuery", nativeQuery = true)
+    List<MetricChartRecord> getAvgMetrics(String deviceId, String type, LocalDate targetDay);
     @Query(value = """
         select cast(value as double precision)
         from metric
