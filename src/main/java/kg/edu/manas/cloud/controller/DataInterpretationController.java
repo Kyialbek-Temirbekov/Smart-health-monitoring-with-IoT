@@ -1,5 +1,6 @@
 package kg.edu.manas.cloud.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kg.edu.manas.cloud.model.data.record.MetricChartRecord;
 import kg.edu.manas.cloud.service.DataInterpretationService;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class DataInterpretationController {
     private final DataInterpretationService dataInterpretationService;
 
+    @Operation(summary = "get avg, min, max values for chart")
     @GetMapping("/chart")
     public List<MetricChartRecord> getTimeBuckets(
             @RequestParam String type,
@@ -29,6 +31,7 @@ public class DataInterpretationController {
     ) {
         return dataInterpretationService.getTimeBuckets(type, targetDay, Optional.ofNullable(user));
     }
+    @Operation(summary = "get standard deviation and mean")
     @GetMapping("/standard-deviation")
     public Map<String, Double> getStandardDeviation(
             @RequestParam String type,
@@ -37,6 +40,7 @@ public class DataInterpretationController {
     ) {
         return dataInterpretationService.getStandardDeviation(type, targetDay, Optional.ofNullable(user));
     }
+    @Operation(summary = "get avg values for chart and correlation")
     @GetMapping("/relation")
     public Map<String, Object> getRelation(
             @RequestParam String firstType,

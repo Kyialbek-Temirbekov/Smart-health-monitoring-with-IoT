@@ -40,11 +40,12 @@ public class CustomerController {
         customerService.updateCustomer(customerRecord);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @Operation(summary = "sign in")
     @PostMapping("/signIn")
     public ResponseEntity<String> singIn(Authentication authentication) {
         return ResponseEntity.status(HttpStatus.OK).body(customerService.signIn(authentication));
     }
-    @Operation(summary = "logged in user data")
+    @Operation(summary = "retrieve user data")
     @GetMapping
     public ResponseEntity<CustomerRecord> getCustomer() {
         return new ResponseEntity<>(customerService.getCustomer(), HttpStatus.OK);
@@ -55,10 +56,12 @@ public class CustomerController {
         customerService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @Operation(summary = "subscribe to patient")
     @PatchMapping("/subscribe")
     public ResponseEntity<String> subscribe(@RequestParam Long userId) {
         return new ResponseEntity<>(customerService.subscribe(userId), HttpStatus.OK);
     }
+    @Operation(summary = "get patients")
     @GetMapping("/patients")
     public ResponseEntity<?> getPatients() {
         return new ResponseEntity<>(customerService.getPatients(), HttpStatus.OK);
