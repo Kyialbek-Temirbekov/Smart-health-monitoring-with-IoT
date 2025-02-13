@@ -193,8 +193,8 @@ public class CustomerService {
     @PreAuthorize("hasRole('DOCTOR')")
     public String authorizeUser(String u) {
         Customer patient = customerRepository.findByUsername(u).orElseThrow(EntityNotFoundException::new);
-        if(!patient.getDoctor().getUsername().equals(getPrincipal())) {
-            throw new AccessDeniedException("User hasn't access to get patient data");
+        if(null == patient.getDoctor() || !patient.getDoctor().getUsername().equals(getPrincipal())) {
+            throw new AccessDeniedException("User has no access to get patient data");
         }
         return u;
     }
