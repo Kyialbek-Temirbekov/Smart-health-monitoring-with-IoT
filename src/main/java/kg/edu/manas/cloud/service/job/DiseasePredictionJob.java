@@ -24,7 +24,7 @@ public class DiseasePredictionJob {
     private final MetricRepository metricRepository;
     private final RecommendationRepository recommendationRepository;
 
-    @Scheduled(cron = "0 0 10 * * *")
+    @Scheduled(cron = "0 6 16 * * *")
     public void predictHeartDisease() throws Exception {
         RandomForest model = (RandomForest) SerializationHelper.read("src/main/resources/heart-disease-prediction.model");
         Instance newData = getInstance();
@@ -45,7 +45,7 @@ public class DiseasePredictionJob {
             if (prediction[1] > 0.5) {
                 log.debug("⚠️ High risk of disease!");
                 var recommendation = Recommendation.builder()
-                        .value("⚠️ High risk of disease!")
+                        .value("⚠️ High risk of heart disease!")
                         .deviceId(instance.deviceId())
                         .timestamp(LocalDateTime.now())
                         .build();
