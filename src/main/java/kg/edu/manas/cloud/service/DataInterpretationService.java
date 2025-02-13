@@ -56,7 +56,13 @@ public class DataInterpretationService {
         );
     }
     private String getDeviceId(Optional<String> user) {
-        String username = user.map(customerService::authorizeUser).orElse(customerService.getPrincipal());
+        String username;
+
+        if(user.isEmpty()) {
+            username = customerService.getPrincipal();
+        } else {
+            username = customerService.authorizeUser(user.get());
+        }
         return deviceRepository.getDeviceIdByUsername(username);
     }
 }
