@@ -2,6 +2,7 @@ package kg.edu.manas.cloud.model.entity;
 
 import jakarta.persistence.*;
 import kg.edu.manas.cloud.model.data.enums.MetricType;
+import kg.edu.manas.cloud.model.data.record.AvgHrStepCountRecord;
 import kg.edu.manas.cloud.model.data.record.MetricChartRecord;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,6 +51,28 @@ import java.time.LocalDateTime;
         group by epoch
         order by epoch
     """, resultSetMapping = "MetricChartRecordMapping"
+)
+@SqlResultSetMapping(
+        name = "AvgHrStepCountPrMapping",
+        classes = @ConstructorResult(
+                targetClass = AvgHrStepCountRecord.class,
+                columns = {
+                        @ColumnResult(name = "deviceId", type = String.class),
+                        @ColumnResult(name = "heartRate", type = Float.class),
+                        @ColumnResult(name = "stepCount", type = Float.class),
+                }
+        )
+)
+@NamedNativeQuery(name = "AvgHrStepCountPr",
+        query = """
+        select device_id as deviceId,
+               avg(cast(value as float)) filter ( where type = 'HEART_BEAT' ) as heartRate,
+               sum(cast(value as float)) filter ( where type = 'STEP_COUNT' ) as stepCount
+        from metric
+        where timestamp >= now() - interval '1 hour'
+        group by device_id
+        order by device_id
+    """, resultSetMapping = "AvgHrStepCountPrMapping"
 )
 @Data
 @AllArgsConstructor

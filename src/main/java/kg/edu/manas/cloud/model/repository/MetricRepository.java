@@ -1,6 +1,7 @@
 package kg.edu.manas.cloud.model.repository;
 
 import kg.edu.manas.cloud.model.data.enums.MetricType;
+import kg.edu.manas.cloud.model.data.record.AvgHrStepCountRecord;
 import kg.edu.manas.cloud.model.data.record.MetricChartRecord;
 import kg.edu.manas.cloud.model.entity.Metric;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,4 +28,6 @@ public interface MetricRepository extends JpaRepository<Metric, Long> {
         and timestamp < cast(:targetDay as date) + interval '1 day'
     """, nativeQuery = true)
     Object[] getValues(String deviceId, String type, LocalDate targetDay);
+    @Query(name = "AvgHrStepCountPr", nativeQuery = true)
+    List<AvgHrStepCountRecord> getAvgHrStepCounts();
 }
