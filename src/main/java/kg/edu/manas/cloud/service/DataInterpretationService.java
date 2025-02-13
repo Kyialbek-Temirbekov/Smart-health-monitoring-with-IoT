@@ -38,8 +38,8 @@ public class DataInterpretationService {
             var yAvgMetrics = CompletableFuture.supplyAsync(() -> metricRepository.getAvgMetrics(deviceId, secondType, targetDay));
             double correlation = findCorrelation(deviceId, firstType, secondType, targetDay);
             return Map.of(
-                    "firstType:" + firstType, xAvgMetrics.get(),
-                    "secondType:" + secondType, yAvgMetrics.get(),
+                    "firstType", xAvgMetrics.get(),
+                    "secondType", yAvgMetrics.get(),
                     "correlation", correlation
             );
         } catch (ExecutionException | InterruptedException e) {

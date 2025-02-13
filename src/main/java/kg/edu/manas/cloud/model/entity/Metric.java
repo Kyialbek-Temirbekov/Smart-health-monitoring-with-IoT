@@ -3,6 +3,7 @@ package kg.edu.manas.cloud.model.entity;
 import jakarta.persistence.*;
 import kg.edu.manas.cloud.model.data.enums.MetricType;
 import kg.edu.manas.cloud.model.data.record.AvgHrStepCountRecord;
+import kg.edu.manas.cloud.model.data.record.MetricAvgRecord;
 import kg.edu.manas.cloud.model.data.record.MetricChartRecord;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +41,16 @@ import java.time.LocalDateTime;
         order by epoch
     """, resultSetMapping = "MetricChartRecordMapping"
 )
+@SqlResultSetMapping(
+        name = "MetricAvgChartMapping",
+        classes = @ConstructorResult(
+                targetClass = MetricAvgRecord.class,
+                columns = {
+                        @ColumnResult(name = "epoch", type = Instant.class),
+                        @ColumnResult(name = "average", type = Float.class)
+                }
+        )
+)
 @NamedNativeQuery(name = "MetricAvgChartQuery",
         query = """
         select time_bucket('2 min', timestamp) as epoch,
@@ -50,7 +61,7 @@ import java.time.LocalDateTime;
         and timestamp < cast(:targetDay as date) + interval '1 day'
         group by epoch
         order by epoch
-    """, resultSetMapping = "MetricChartRecordMapping"
+    """, resultSetMapping = "MetricAvgChartMapping"
 )
 @SqlResultSetMapping(
         name = "AvgHrStepCountPrMapping",
