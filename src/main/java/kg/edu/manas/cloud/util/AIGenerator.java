@@ -9,7 +9,7 @@ import weka.core.converters.ConverterUtils;
 public class AIGenerator {
     public static void build() throws Exception {
 
-        ConverterUtils.DataSource source = new ConverterUtils.DataSource("heart-rate-disease.arff");
+        ConverterUtils.DataSource source = new ConverterUtils.DataSource("heart-disease.arff");
         Instances dataset = source.getDataSet();
         dataset.setClassIndex(2);
 
@@ -17,9 +17,9 @@ public class AIGenerator {
         RandomForest model = new RandomForest();
         model.buildClassifier(dataset);
 
-        SerializationHelper.write("src/main/resources/hr-disease-prediction.model", model);
+        SerializationHelper.write("src/main/resources/heart-disease-prediction.model", model);
 
-        ConverterUtils.DataSource testSource = new ConverterUtils.DataSource("heart-rate-disease-test.arff");
+        ConverterUtils.DataSource testSource = new ConverterUtils.DataSource("heart-disease-test.arff");
         Instances testDataset = testSource.getDataSet();
         testDataset.setClassIndex(2);
 

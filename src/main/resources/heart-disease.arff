@@ -1,6 +1,6 @@
-@relation HRDisease
+@relation HeartDisease
 
-@attribute meanHR numeric
+@attribute meanhr numeric
 @attribute steps numeric
 @attribute disease {0,1}
 

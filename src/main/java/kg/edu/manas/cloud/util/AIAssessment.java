@@ -10,11 +10,11 @@ import weka.core.converters.ConverterUtils;
 public class AIAssessment {
     public static void assess() throws Exception {
 
-        ConverterUtils.DataSource source = new ConverterUtils.DataSource("heart-rate-disease.arff");
+        ConverterUtils.DataSource source = new ConverterUtils.DataSource("heart-disease.arff");
         Instances dataset = source.getDataSet();
         dataset.setClassIndex(2);
 
-        RandomForest loadedModel = (RandomForest) SerializationHelper.read("src/main/resources/hr-disease-prediction.model");
+        RandomForest loadedModel = (RandomForest) SerializationHelper.read("src/main/resources/heart-disease-prediction.model");
 
         Instance newData = new DenseInstance(3);
         newData.setDataset(dataset);

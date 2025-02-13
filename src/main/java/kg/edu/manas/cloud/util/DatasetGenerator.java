@@ -13,7 +13,7 @@ public class DatasetGenerator {
 
     public static void generateDataset() throws IOException {
         ArrayList<Attribute> attributes = new ArrayList<>();
-        attributes.add(new Attribute("meanHR"));
+        attributes.add(new Attribute("meanhr"));
         attributes.add(new Attribute("steps"));
 
         ArrayList<String> classValues = new ArrayList<>();
@@ -21,7 +21,7 @@ public class DatasetGenerator {
         classValues.add("1");
         attributes.add(new Attribute("disease", classValues));
 
-        Instances dataset = new Instances("HRDisease", attributes, 0);
+        Instances dataset = new Instances("HeartDisease", attributes, 0);
         dataset.setClassIndex(2);
 
         Random rand = new Random();
@@ -40,7 +40,7 @@ public class DatasetGenerator {
             addInstance(dataset, heartRate, steps, diseaseRisk);
         }
 
-        saveDatasetToFile(dataset, "src/main/resources/heart-rate-disease.arff");
+        saveDatasetToFile(dataset, "src/main/resources/heart-disease.arff");
         System.out.println("Dataset saved successfully.");
     }
 
