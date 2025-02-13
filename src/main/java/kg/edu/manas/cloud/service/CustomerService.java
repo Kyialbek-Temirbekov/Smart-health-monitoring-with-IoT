@@ -151,7 +151,7 @@ public class CustomerService {
         }
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         customerRepository.deleteById(id);
     }
 
@@ -166,7 +166,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public String subscribe(String userId) {
+    public String subscribe(Long userId) {
         var patientOpt = customerRepository.findById(userId);
         Customer patient = patientOpt.orElseThrow(EntityNotFoundException::new);
         if(patient.getDoctor() == null) {

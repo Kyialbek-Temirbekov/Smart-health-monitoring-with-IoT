@@ -51,12 +51,12 @@ public class CustomerController {
     }
     @Operation(summary = "delete user")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable String id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         customerService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PatchMapping("/subscribe")
-    public ResponseEntity<String> subscribe(@RequestParam String userId) {
+    public ResponseEntity<String> subscribe(@RequestParam Long userId) {
         return new ResponseEntity<>(customerService.subscribe(userId), HttpStatus.OK);
     }
     @GetMapping("/patients")

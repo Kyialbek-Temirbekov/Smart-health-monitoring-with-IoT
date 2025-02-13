@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, String> {
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
     <T> Optional<T> findByUsername(String username, Class<T> type);
     Optional<Customer> findByUsername(String username);
     @Query("SELECT c.birthDate FROM Device d JOIN Customer c ON d.customer.id = c.id WHERE d.id = :deviceId")

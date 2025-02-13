@@ -22,8 +22,9 @@ import java.util.List;
 @Builder
 public class Customer implements UserDetails {
     @Id
-    @UuidGenerator
-    private String id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_id_gen")
+    @SequenceGenerator(name = "customer_id_gen", sequenceName = "customer_seq", allocationSize = 1)
+    private Long id;
     private String username;
     private String password;
     private String name;
