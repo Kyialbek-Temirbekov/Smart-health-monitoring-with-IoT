@@ -1,6 +1,7 @@
 package kg.edu.manas.cloud.model.entity;
 
 import jakarta.persistence.*;
+import kg.edu.manas.cloud.model.data.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +28,8 @@ public class Customer implements UserDetails {
     private String password;
     private String name;
     private LocalDate birthDate;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     private boolean isEnabled;
     @OneToMany(mappedBy = "customer")
     private List<Device> devices;

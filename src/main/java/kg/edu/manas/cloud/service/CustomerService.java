@@ -65,6 +65,7 @@ public class CustomerService {
                 customer.setPassword(passwordEncoder.encode(createCustomerRecord.password()));
                 customer.setName(createCustomerRecord.name());
                 customer.setBirthDate(createCustomerRecord.birthDate());
+                customer.setRole(createCustomerRecord.role());
 
                 Otp otp = otpRepository.findById(optionalCustomer.get().getId()).orElseThrow(EntityNotFoundException::new);
                 otp.setValue(otpValue);
@@ -187,7 +188,7 @@ public class CustomerService {
         )).toList();
     }
 
-//    @PreAuthorize("hasRole('DOCTOR')")
+    @PreAuthorize("hasRole('DOCTOR')")
     public String authorizeUser(String u) {
         Customer patient = customerRepository.findByUsername(u).orElseThrow(EntityNotFoundException::new);
         if(!patient.getDoctor().getUsername().equals(getPrincipal())) {

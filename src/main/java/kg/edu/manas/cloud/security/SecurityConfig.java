@@ -33,8 +33,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/customer/signUp", "api/customer/confirmEmail").permitAll()
-                        .anyRequest().permitAll()
-//                        .anyRequest().authenticated()
+//                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterAfter(authenticationFilter, BasicAuthenticationFilter.class)
                 .httpBasic(c -> c.authenticationEntryPoint(authenticationEntryPoint()))
