@@ -1,7 +1,5 @@
 package kg.edu.manas.cloud;
 
-import kg.edu.manas.cloud.service.AnalyticsService;
-import kg.edu.manas.cloud.util.StatisticsUtil;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
