@@ -1,6 +1,8 @@
 package kg.edu.manas.cloud.service.job;
 
+import kg.edu.manas.cloud.model.entity.Recommendation;
 import kg.edu.manas.cloud.model.repository.MetricRepository;
+import kg.edu.manas.cloud.model.repository.RecommendationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,11 +14,15 @@ import weka.core.Instances;
 import weka.core.SerializationHelper;
 import weka.core.converters.ConverterUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class DiseasePredictionJob {
     private final MetricRepository metricRepository;
+    private final RecommendationRepository recommendationRepository;
 
     @Scheduled(cron = "0 0 10 * * *")
     public void predictHeartDisease() throws Exception {
@@ -38,8 +44,14 @@ public class DiseasePredictionJob {
 
             if (prediction[1] > 0.5) {
                 log.debug("⚠️ High risk of disease!");
-                var deviceId = instance.deviceId();
-                // create recommendation for this user
+                var recommendation = Recommendation.builder()
+                        .value("⚠️ High risk of disease!")
+                        .deviceId(instance.deviceId())
+                        .timestamp(LocalDateTime.now())
+                        .build();
+                if(!recommendationRepository.existsByDeviceIdAndTimestampIsAfter(instance.deviceId(), LocalDate.now().atStartOfDay())) {
+                    recommendationRepository.save(recommendation);
+                }
             } else {
                 log.debug("✅ Low risk of disease.");
             }
