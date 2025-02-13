@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class DatasetGenerator {
 
-    public static void main(String[] args) throws IOException {
+    public static void generateDataset() throws IOException {
         ArrayList<Attribute> attributes = new ArrayList<>();
         attributes.add(new Attribute("meanHR"));
         attributes.add(new Attribute("steps"));

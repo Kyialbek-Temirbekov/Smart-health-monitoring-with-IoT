@@ -6,14 +6,14 @@ import weka.core.Instances;
 import weka.core.SerializationHelper;
 import weka.core.converters.ConverterUtils;
 
-public class ModelBuild {
-    public static void main(String[] args) throws Exception {
+public class AIGenerator {
+    public static void build() throws Exception {
 
         ConverterUtils.DataSource source = new ConverterUtils.DataSource("heart-rate-disease.arff");
         Instances dataset = source.getDataSet();
         dataset.setClassIndex(2);
 
-//        Logistic model = new Logistic();
+        /*Logistic model = new Logistic();*/
         RandomForest model = new RandomForest();
         model.buildClassifier(dataset);
 
@@ -27,7 +27,6 @@ public class ModelBuild {
 
         eval.evaluateModel(model, testDataset);
 
-        // 5. Выводим основные метрики
         System.out.println("Correctly Classified Instances: " + eval.pctCorrect() + "%");
         System.out.println("Incorrectly Classified Instances: " + eval.pctIncorrect() + "%");
         System.out.println("Precision: " + eval.precision(1));
