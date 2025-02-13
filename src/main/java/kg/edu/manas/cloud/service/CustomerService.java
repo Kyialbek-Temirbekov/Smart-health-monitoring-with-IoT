@@ -166,6 +166,7 @@ public class CustomerService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('DOCTOR')")
     public String subscribe(Long userId) {
         var patientOpt = customerRepository.findById(userId);
         Customer patient = patientOpt.orElseThrow(EntityNotFoundException::new);
@@ -173,7 +174,7 @@ public class CustomerService {
             Customer currentUser = getLoggedInUser();
             patient.setDoctor(currentUser);
             currentUser.getPatients().add(patient);
-            return "Пациет ийгиликтүү кошулду";
+            return "Пациент ийгиликтүү кошулду";
         }
         else {
             return "Пациенттин жеке доктору бар";
@@ -181,6 +182,7 @@ public class CustomerService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('DOCTOR')")
     public List<?> getPatients() {
         return getLoggedInUser().getPatients().stream().map(customer -> Map.of(
                 "name", customer.getName(),
