@@ -1,6 +1,7 @@
 package kg.edu.manas.cloud.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kg.edu.manas.cloud.model.data.record.RecommendationRecord;
 import kg.edu.manas.cloud.service.RecommendationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ public class RecommendationController {
     private final RecommendationService recommendationService;
 
     @GetMapping
-    public List<?> getRecommendations() {
+    public List<RecommendationRecord> getRecommendations() {
         return recommendationService.getRecommendations();
     }
 }

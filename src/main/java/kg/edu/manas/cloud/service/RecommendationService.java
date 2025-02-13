@@ -1,6 +1,6 @@
 package kg.edu.manas.cloud.service;
 
-import kg.edu.manas.cloud.model.entity.Recommendation;
+import kg.edu.manas.cloud.model.data.record.RecommendationRecord;
 import kg.edu.manas.cloud.model.repository.DeviceRepository;
 import kg.edu.manas.cloud.model.repository.RecommendationRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,8 @@ public class RecommendationService {
     private final DeviceRepository deviceRepository;
     private final CustomerService customerService;
 
-    public List<Recommendation> getRecommendations() {
+    public List<RecommendationRecord> getRecommendations() {
         String deviceId = deviceRepository.getDeviceIdByUsername(customerService.getPrincipal());
-        return recommendationRepository.findAllByDeviceId(deviceId);
+        return recommendationRepository.findAllByDeviceId(deviceId, RecommendationRecord.class);
     }
 }

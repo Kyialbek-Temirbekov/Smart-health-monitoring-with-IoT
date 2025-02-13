@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface RecommendationRepository extends JpaRepository<Recommendation, Long> {
-    List<Recommendation> findAllByDeviceId(String deviceId);
+    <T> List<T> findAllByDeviceId(String deviceId, Class<T> type);
     boolean existsByDeviceIdAndTimestampIsAfter(String deviceId, LocalDateTime timestamp);
 }
