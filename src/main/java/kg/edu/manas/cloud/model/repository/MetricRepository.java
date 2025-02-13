@@ -29,6 +29,14 @@ public interface MetricRepository extends JpaRepository<Metric, Long> {
         and timestamp < cast(:targetDay as date) + interval '1 day'
     """, nativeQuery = true)
     Object[] getValues(String deviceId, String type, LocalDate targetDay);
+    @Query(value = """
+        select cast(value as double precision)
+        from metric
+        where device_id = :deviceId and type = :type
+        and timestamp >= :from
+        and timestamp < :to
+    """, nativeQuery = true)
+    Object[] getValuesFromTo(String deviceId, String type, LocalDateTime from, LocalDateTime to);
     @Query(name = "AvgHrStepCountPr", nativeQuery = true)
     List<AvgHrStepCountRecord> getAvgHrStepCounts();
 }

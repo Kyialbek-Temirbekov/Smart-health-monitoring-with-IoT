@@ -25,13 +25,20 @@ public class DataInterpretationService {
     public List<MetricChartRecord> getTimeBuckets(String type, LocalDate targetDay, Optional<String> user) {
         return metricRepository.getTimeBuckets(getDeviceId(user), type, targetDay);
     }
-    public Map<String, Double> getStandardDeviation(String type, LocalDate targetDay, Optional<String> user) {
-        var data = Arrays.stream(metricRepository.getValues(getDeviceId(user), type, targetDay)).mapToDouble(o -> (Double) o).toArray();
-        var mean = StatisticsUtil.findMean(data);
-        var stdDev = StatisticsUtil.findStandardDeviation(data);
-        return Map.of("mean", mean, "standardDeviation", stdDev);
+
+    public Map<String, Object> getStandardDeviation(String type, LocalDate targetDay, Optional<String> user) {
+        var sunrise = targetDay.atTime(6, 0);
+        var sunset = targetDay.atTime(22, 0);
+        var daytimeData = Arrays.stream(metricRepository.getValuesFromTo(getDeviceId(user), type, sunrise, sunset)).mapToDouble(o -> (Double) o).toArray();
+        var nighttimeData = Arrays.stream(metricRepository.getValuesFromTo(getDeviceId(user), type, sunset, sunrise)).mapToDouble(o -> (Double) o).toArray();
+
+        return Map.of(
+                "daytime", Map.of("mean", StatisticsUtil.findMean(daytimeData), "standardDeviation", StatisticsUtil.findStandardDeviation(daytimeData)),
+                "nighttime", Map.of("mean", StatisticsUtil.findMean(nighttimeData), "standardDeviation", StatisticsUtil.findStandardDeviation(nighttimeData))
+        );
     }
-    public Map<String, Object> getRelation(String firstType, String secondType, LocalDate targetDay, Optional<String> user) {
+    public
+    Map<String, Object> getRelation(String firstType, String secondType, LocalDate targetDay, Optional<String> user) {
         String deviceId = getDeviceId(user);
         try {
             var xAvgMetrics = CompletableFuture.supplyAsync(() -> metricRepository.getAvgMetrics(deviceId, firstType, targetDay));
@@ -46,6 +53,7 @@ public class DataInterpretationService {
             throw new RuntimeException(e);
         }
     }
+
     private double findCorrelation(String deviceId, String firstType, String secondType, LocalDate targetDay) throws ExecutionException, InterruptedException {
         var yValues = CompletableFuture.supplyAsync(
                 () -> Arrays.stream(metricRepository.getValues(deviceId, secondType, targetDay)).mapToDouble(o -> (Double) o).toArray()
@@ -55,6 +63,7 @@ public class DataInterpretationService {
                 yValues.get()
         );
     }
+
     private String getDeviceId(Optional<String> user) {
         String username;
 

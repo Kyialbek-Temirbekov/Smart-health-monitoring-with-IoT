@@ -33,7 +33,7 @@ public class DataInterpretationController {
     }
     @Operation(summary = "get standard deviation and mean")
     @GetMapping("/standard-deviation")
-    public Map<String, Double> getStandardDeviation(
+    public Map<String, Object> getStandardDeviation(
             @RequestParam String type,
             @RequestParam LocalDate targetDay,
             @RequestParam(required = false) String user
