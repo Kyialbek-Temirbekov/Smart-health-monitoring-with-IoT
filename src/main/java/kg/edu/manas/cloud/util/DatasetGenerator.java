@@ -25,14 +25,14 @@ public class DatasetGenerator {
         dataset.setClassIndex(2);
 
         Random rand = new Random();
-        for (int i = 0; i < 20000; i++) {
+        for (int i = 0; i < 5000; i++) {
             double heartRate = generateHeartRate(rand,40,120);
             int steps = generateSteps(rand, 0, 50000);
             int diseaseRisk = generateDiseaseRisk(heartRate, steps);
 
             addInstance(dataset, heartRate, steps, diseaseRisk);
         }
-        for (int i = 0; i < 30000; i++) {
+        for (int i = 0; i < 5000; i++) {
             double heartRate = generateHeartRate(rand, 90, 90);
             int steps = generateSteps(rand, 0, 5000);
             int diseaseRisk = generateDiseaseRisk(heartRate, steps);
