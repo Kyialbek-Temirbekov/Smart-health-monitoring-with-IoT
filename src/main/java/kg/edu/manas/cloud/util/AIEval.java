@@ -10,9 +10,6 @@ import weka.core.converters.ConverterUtils;
 import java.util.Random;
 
 public class AIEval {
-    public static void main(String[] args) throws Exception {
-        build();
-    }
     public static void build() throws Exception {
 
         ConverterUtils.DataSource source = new ConverterUtils.DataSource("heart-disease.arff");
