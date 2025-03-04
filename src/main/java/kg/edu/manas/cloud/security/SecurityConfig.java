@@ -1,6 +1,7 @@
 package kg.edu.manas.cloud.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.manas.cloud.model.data.record.ErrorResponseRecord;
 import kg.edu.manas.cloud.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.io.PrintWriter;
+import java.util.Collections;
 
 @Configuration
 @RequiredArgsConstructor
@@ -29,7 +33,17 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter authenticationFilter) throws Exception {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(Collections.singletonList("*"));
+                    config.setAllowedMethods(Collections.singletonList("*"));
+                    config.setAllowCredentials(true);
+                    config.setAllowedHeaders(Collections.singletonList("*"));
+                    config.setExposedHeaders(Collections.singletonList("Authorization"));
+                    config.setExposedHeaders(Collections.singletonList("Content-Type"));
+                    config.setMaxAge(3600L);
+                    return config;
+                }))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/customer/signUp", "/customer/confirmEmail").permitAll()
