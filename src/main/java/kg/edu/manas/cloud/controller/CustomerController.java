@@ -34,18 +34,18 @@ public class CustomerController {
         customerService.confirmEmail(otpRecord);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @Operation(summary = "update customer")
+    @Operation(summary = "update customer (JWT)")
     @PatchMapping()
     public ResponseEntity<String> updateCustomer(@RequestBody UpdateCustomerRecord customerRecord) {
         customerService.updateCustomer(customerRecord);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @Operation(summary = "sign in")
+    @Operation(summary = "sign in (Basic Authentication)")
     @PostMapping("/signIn")
     public ResponseEntity<String> singIn(Authentication authentication) {
         return ResponseEntity.status(HttpStatus.OK).body(customerService.signIn(authentication));
     }
-    @Operation(summary = "retrieve user data")
+    @Operation(summary = "retrieve user data (JWT)")
     @GetMapping
     public ResponseEntity<CustomerRecord> getCustomer() {
         return new ResponseEntity<>(customerService.getCustomer(), HttpStatus.OK);
@@ -56,12 +56,12 @@ public class CustomerController {
         customerService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @Operation(summary = "subscribe to patient")
+    @Operation(summary = "subscribe to patient (JWT)")
     @PatchMapping("/subscribe")
     public ResponseEntity<String> subscribe(@RequestParam Long userId) {
         return new ResponseEntity<>(customerService.subscribe(userId), HttpStatus.OK);
     }
-    @Operation(summary = "get patients")
+    @Operation(summary = "get patients (JWT)")
     @GetMapping("/patients")
     public ResponseEntity<?> getPatients() {
         return new ResponseEntity<>(customerService.getPatients(), HttpStatus.OK);

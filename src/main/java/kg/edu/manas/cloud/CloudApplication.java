@@ -1,5 +1,7 @@
 package kg.edu.manas.cloud;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import kg.edu.manas.cloud.model.data.enums.MetricType;
 import kg.edu.manas.cloud.model.entity.Metric;
 import kg.edu.manas.cloud.model.repository.MetricRepository;
@@ -21,6 +23,12 @@ import java.util.List;
 @EnableCaching
 @EnableScheduling
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+@OpenAPIDefinition(
+		info = @Info(
+				title = "IoT Cloud REST API Documentation",
+				description = "<h3>Authentication:</h3><br> <b>JWT</b>: Bearer {jwt_token}<br> <b>Basic</b>: Basic {Base64.encode(username:password)}"
+		)
+)
 public class CloudApplication {
 
 	public static void main(String[] args) {

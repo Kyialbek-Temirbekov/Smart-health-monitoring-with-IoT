@@ -20,4 +20,8 @@ public class ConfigController {
     public String clearCache() {
         return configService.clearCache();
     }
+    @GetMapping
+    public String check() {
+        return "Hello Spring Boot";
+    }
 }

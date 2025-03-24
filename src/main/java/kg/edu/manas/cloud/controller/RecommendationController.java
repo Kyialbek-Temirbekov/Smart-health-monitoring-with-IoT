@@ -18,7 +18,7 @@ import java.util.List;
 public class RecommendationController {
     private final RecommendationService recommendationService;
 
-    @Operation(summary = "get recommendations")
+    @Operation(summary = "get recommendations (JWT)")
     @GetMapping
     public List<RecommendationRecord> getRecommendations() {
         return recommendationService.getRecommendations();

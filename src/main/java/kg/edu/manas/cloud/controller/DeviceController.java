@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DeviceController {
     private final DeviceService deviceService;
 
-    @Operation(summary = "add device")
+    @Operation(summary = "add device (JWT)")
     @PostMapping()
     public ResponseEntity<String> createCustomer(@RequestBody CreateDeviceRecord createDeviceRecord) {
         deviceService.save(createDeviceRecord);

@@ -22,7 +22,7 @@ import java.util.Optional;
 public class DataInterpretationController {
     private final DataInterpretationService dataInterpretationService;
 
-    @Operation(summary = "get avg, min, max values for chart")
+    @Operation(summary = "get avg, min, max values for chart (JWT or Request Param 'user')")
     @GetMapping("/chart")
     public List<MetricChartRecord> getTimeBuckets(
             @RequestParam String type,
@@ -31,7 +31,7 @@ public class DataInterpretationController {
     ) {
         return dataInterpretationService.getTimeBuckets(type, targetDay, Optional.ofNullable(user));
     }
-    @Operation(summary = "get standard deviation and mean")
+    @Operation(summary = "get standard deviation and mean (JWT or Request Param 'user')")
     @GetMapping("/standard-deviation")
     public Map<String, Object> getStandardDeviation(
             @RequestParam String type,
@@ -40,7 +40,7 @@ public class DataInterpretationController {
     ) {
         return dataInterpretationService.getStandardDeviation(type, targetDay, Optional.ofNullable(user));
     }
-    @Operation(summary = "get avg values for chart and correlation")
+    @Operation(summary = "get avg values for chart and correlation (JWT or Request Param 'user')")
     @GetMapping("/relation")
     public Map<String, Object> getRelation(
             @RequestParam String firstType,

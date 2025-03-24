@@ -47,8 +47,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/customer/signUp", "/customer/confirmEmail").permitAll()
-//                        .anyRequest().permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
+//                        .anyRequest().authenticated()
                 )
                 .addFilterAfter(authenticationFilter, BasicAuthenticationFilter.class)
                 .httpBasic(c -> c.authenticationEntryPoint(authenticationEntryPoint()))
