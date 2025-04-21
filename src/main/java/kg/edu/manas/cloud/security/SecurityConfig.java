@@ -7,6 +7,7 @@ import kg.edu.manas.cloud.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
@@ -22,6 +23,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -35,12 +37,18 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Collections.singletonList("*"));
-                    config.setAllowedMethods(Collections.singletonList("*"));
+                    config.setAllowedOriginPatterns(Collections.singletonList("*"));
+                    config.setAllowedMethods(Arrays.asList(
+                            HttpMethod.GET.name(),
+                            HttpMethod.POST.name(),
+                            HttpMethod.PUT.name(),
+                            HttpMethod.PATCH.name(),
+                            HttpMethod.DELETE.name(),
+                            HttpMethod.OPTIONS.name()
+                    ));
                     config.setAllowCredentials(true);
                     config.setAllowedHeaders(Collections.singletonList("*"));
-                    config.setExposedHeaders(Collections.singletonList("Authorization"));
-                    config.setExposedHeaders(Collections.singletonList("Content-Type"));
+                    config.setExposedHeaders(Arrays.asList("Authorization","Content-Type"));
                     config.setMaxAge(3600L);
                     return config;
                 }))
