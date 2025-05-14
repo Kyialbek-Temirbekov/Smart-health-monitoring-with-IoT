@@ -49,12 +49,12 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED
         );
     }
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponseRecord> handleException(RuntimeException ex, WebRequest request) {
-        return new ResponseEntity<>(
-                new ErrorResponseRecord(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage()),
-                HttpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<ErrorResponseRecord> handleException(RuntimeException ex, WebRequest request) {
+//        return new ResponseEntity<>(
+//                new ErrorResponseRecord(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage()),
+//                HttpStatus.INTERNAL_SERVER_ERROR
+//        );
+//    }
 
 }

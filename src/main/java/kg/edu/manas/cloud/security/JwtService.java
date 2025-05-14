@@ -20,7 +20,7 @@ public class JwtService {
                 .claim("username", username)
                 .claim("authorities", authorities)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + 3600000))
+                .setExpiration(new Date(new Date().getTime() + 86400000))
                 .signWith(key).compact();
     }
 }
