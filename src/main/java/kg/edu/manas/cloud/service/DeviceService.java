@@ -16,7 +16,15 @@ public class DeviceService {
     public void save(CreateDeviceRecord createDeviceRecord) {
         Device device = Device.builder()
                 .id(encryptionService.encrypt(createDeviceRecord.id()))
+                .brand(createDeviceRecord.brand())
+                .model(createDeviceRecord.model())
+                .releaseDate(createDeviceRecord.releaseDate())
+                .batteryLife(createDeviceRecord.batteryLife())
                 .customer(customerService.getLoggedInUser()).build();
         deviceRepository.save(device);
+    }
+    public CreateDeviceRecord getDevice() {
+        return deviceRepository.findByCustomerId(customerService.getLoggedInUser().getId(), CreateDeviceRecord.class)
+                .orElseThrow();
     }
 }

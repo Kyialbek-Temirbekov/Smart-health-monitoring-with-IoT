@@ -20,6 +20,8 @@ public class Device {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
+    @Column(name = "customer_id", insertable = false, updatable = false)
+    private Long customerId;
     @OneToMany(mappedBy = "device")
     private List<Metric> metrics;
     private String brand;
