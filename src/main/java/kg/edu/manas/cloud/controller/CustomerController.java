@@ -66,4 +66,9 @@ public class CustomerController {
     public ResponseEntity<?> getPatients() {
         return new ResponseEntity<>(customerService.getPatients(), HttpStatus.OK);
     }
+    @Operation(summary = "get doctor (JWT)")
+    @GetMapping("/doctor")
+    public ResponseEntity<?> getDoctor() {
+        return new ResponseEntity<>(customerService.getDoctor(), HttpStatus.OK);
+    }
 }

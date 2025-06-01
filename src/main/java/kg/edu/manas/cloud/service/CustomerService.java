@@ -192,6 +192,14 @@ public class CustomerService {
         )).toList();
     }
 
+    public Object getDoctor() {
+        var doctorEntity = getLoggedInUser().getDoctor();
+        return Map.of(
+                "name", doctorEntity.getName(),
+                "username", doctorEntity.getUsername()
+        );
+    }
+
     @PreAuthorize("hasRole('DOCTOR')")
     public String authorizeUser(String u) {
         Customer patient = customerRepository.findByUsername(u).orElseThrow(EntityNotFoundException::new);
