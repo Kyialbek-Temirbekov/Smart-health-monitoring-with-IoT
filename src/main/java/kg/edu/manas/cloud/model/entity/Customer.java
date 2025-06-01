@@ -30,6 +30,8 @@ public class Customer implements UserDetails {
     private String password;
     private String name;
     private LocalDate birthDate;
+    private Double height;
+    private Double weight;
     @Enumerated(EnumType.STRING)
     private Role role;
     private boolean isEnabled;

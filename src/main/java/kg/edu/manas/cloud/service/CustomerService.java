@@ -110,6 +110,8 @@ public class CustomerService {
 
         criteriaUpdate.set(root.get("name"), customerRecord.name());
         criteriaUpdate.set(root.get("birthDate"), customerRecord.birthDate());
+        criteriaUpdate.set(root.get("height"), customerRecord.height());
+        criteriaUpdate.set(root.get("weight"), customerRecord.weight());
         criteriaUpdate.where(criteriaBuilder.equal(root.get("username"), getPrincipal()));
 
         entityManager.createQuery(criteriaUpdate).executeUpdate();
