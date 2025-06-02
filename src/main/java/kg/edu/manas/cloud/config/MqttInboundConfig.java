@@ -23,7 +23,7 @@ public class MqttInboundConfig {
     public MqttPahoClientFactory mqttInboundClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(new String[]{"tcp://localhost:1884"});
+        options.setServerURIs(new String[]{"tcp://broker.hivemq.com:1883"});
         options.setCleanSession(false);
         options.setKeepAliveInterval(60);
 //        options.setConnectionTimeout(10);

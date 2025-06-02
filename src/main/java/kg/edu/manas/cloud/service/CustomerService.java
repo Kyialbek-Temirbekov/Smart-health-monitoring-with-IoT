@@ -160,7 +160,11 @@ public class CustomerService {
     @Cacheable(value = "age", key = "#deviceId")
     public int getAge(String deviceId) {
         var birthDate = customerRepository.getBirthDate(deviceId);
-        return Period.between(birthDate, LocalDate.now()).getYears();
+        try {
+            return Period.between(birthDate, LocalDate.now()).getYears();
+        } catch (Exception e) {
+            return 25;
+        }
     }
 
     public String getName(String deviceId) {
