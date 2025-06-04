@@ -19,7 +19,7 @@ public class RedisCache {
         redisTemplate.opsForValue().set(id, value, timeout, TimeUnit.MINUTES);
     }
     public long getExpire(String id) {
-        return redisTemplate.getExpire(id);
+        return redisTemplate.getExpire(id, TimeUnit.MINUTES);
     }
     public void remove(String id) {
         redisTemplate.delete(id);
